@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 
-from hashlib import sha256
+from hashlib import sha512
+from sys import version_info
 
 print("=======================================================================")
 print("======================== PASSWORD DERIVATOR ===========================")
 print("=======================================================================")
-print()
-website_name = input("Enter the website name your password is for: ")
+print("")
+
+if version_info > (3, 0): # Python 3
+    website_name = input("Enter the website name your password is for: ")
+else: # Python 2
+    website_name = raw_input("Enter the website name your password is for: ")
+
 try:
     with open('MasterPasswordDigest.txt','rb') as f:
         password_hash = f.read()
@@ -15,14 +21,18 @@ except IOError as e:
     print("Did you run firstrun.py before this program ? (Aborting program)")
     exit(1)
 print("=> Master password hash file loaded.")
-# We call this digest but it's not a digest yet really
-password = password_hash + website_name.encode('utf_8')    
 
+password = password_hash + website_name.encode('utf_8')
 
-password = sha256(password).hexdigest() # hex digest to have readable letters and numbers [0-9a-f]
-offset = int(password, 16)
+for _ in range(3000000):
+    password = sha512(password).digest()
+    
+password = sha512(password).hexdigest() # hex digest to have readable letters and numbers [0-9a-f]
+
+offset = int(password, 16) # Integer value of digest
 
 password = password[0:30] # otherwise it's too long for some websites
+
 for i in range(len(password)):
     character_value = ord(password[i])
     character_value = (character_value + offset) % 127 # makes sure it's < 127
@@ -68,4 +78,4 @@ while character_value not in range(33,47) and character_value not in range(58,64
     character_value = (character_value + offset) % 127
 password = password[0 : i] + chr(character_value) + password[i+1 : ]
 
-print("=> Your password is: ", password)
+print("=> Your password is: "+str(password))
