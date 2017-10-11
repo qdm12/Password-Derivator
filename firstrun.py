@@ -13,7 +13,13 @@ print("== It is impossible to go from the hash digest back to the password ===")
 print("====== Be sure to keep your MasterPasswordDigest.txt safe though ======")
 print("=======================================================================")
 print("")
-master_password = getpass("Enter your master password: ")
+master_password = "x"
+master_password2 = "y"
+while master_password != master_password2:
+    master_password = getpass("Enter your master password: ")
+    master_password2 = getpass("Enter your master password again: ")
+    if master_password != master_password2:
+        print("Passwords are not matching ! Try again.")
 password_hash = sha512(master_password.encode('utf_8')).digest()
 
 #################################################################
