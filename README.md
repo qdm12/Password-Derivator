@@ -16,7 +16,7 @@
     - Hacking attacks
         - Website hacked
         - HTTP sniffing
-        - HTTPS and NSA backdoors 
+        - HTTPS and NSA backdoors at certificate authorities issuing your keys
     - Loss
 6. Finish User interface with [Kivy](https://kivy.org)
 7. Make it USB portable
