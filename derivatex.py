@@ -2,7 +2,7 @@
 
 from hashlib import sha512
 from sys import version_info
-from itertools import chain
+from myargon import Argon2id
 
 def read_masterpassworddigest():
     try:
@@ -15,22 +15,21 @@ def read_masterpassworddigest():
     print("=> Master password hash file loaded.")
     return password_hash
 
-def get_passwordskeleton(masterpassworddigest, website_name, hashiter=3000000):
+def intestinize(masterpassworddigest, website_name):
     password = masterpassworddigest + website_name.encode('utf_8')
-    for _ in range(hashiter):
-        password = sha512(password).digest()
-    return sha512(password).hexdigest() # hex digest to have readable letters and numbers [0-9a-f]
+    salt = sha512(website_name.encode('utf-8')).digest()
+    digest = Argon2id(salt_len=len(salt),                      
+                      salt=salt,
+                      hash_len=22,
+                      memory_cost=33554,
+                      time_cost=100).hash(password)
+    del password, salt
+    digest = digest[digest.rfind('$')+1:]
+    return digest[:30]
 
-def make_complicated(password, offset):
-    password = password[0:30] # otherwise it's too long for some websites
-    for i in range(len(password)): # for each character
-        character_value = ord(password[i])
-        character_value = (character_value + offset) % 127 # makes sure it's < 127
-        while character_value < 33: # we want it to be between 33 and 126
-            character_value = (character_value + offset) % 127
-        new_character = chr(character_value) # we convert back to character, using the ASCII table
-        password = password[0:i] + new_character + password[i+1:]
-    return password
+
+    digest = sha512(password).digest()
+    return digest
 
 def find_indexestopick(password, offset):
     indexes_to_pick = []
@@ -50,7 +49,7 @@ def ensure(characterType, password, offset, i):
     elif characterType == 'uppercase':
         targetRange = range(65,90)
     elif characterType == 'symbol':
-        targetRange = chain(range(33,47), range(58,64), range(91,96), range(123,126))
+        targetRange = list(range(33,47)) + list(range(58,64)) + list(range(91,96)) + list(range(123,126))
     else:
         raise Exception("This characterType is not recognized!")
     character_value = ord(password[i])
@@ -59,24 +58,17 @@ def ensure(characterType, password, offset, i):
     return password[0 : i] + chr(character_value) + password[i+1 : ]
 
 if __name__ == '__main__':
-    print("=======================================================================")
-    print("======================== PASSWORD DERIVATOR ===========================")
-    print("=======================================================================")
-    print("")
     if version_info > (3, 0): # Python 3
-        website_name = input("Enter the website name your password is for: ")
+        website_name = input("Enter the website name: ")
     else: # Python 2
-        website_name = raw_input("Enter the website name your password is for: ")
+        website_name = raw_input("Enter the website name: ")
     
-    # The master password digest file is loaded
     masterpassworddigest = read_masterpassworddigest()
     
-    # The website-specific password is created
-    password = get_passwordskeleton(masterpassworddigest, website_name)
-    offset = int(password, 16) # Integer value of digest
-    password = make_complicated(password, offset)
+    password = intestinize(masterpassworddigest, website_name)
     
     # We make sure the password will have 1 digit, 1 letter, 1 uppercase letter and 1 symbol
+    offset = int(sha512(password.encode('utf-8')).digest().hex(), 16) # Integer value of digest
     indexes_to_pick = find_indexestopick(password, offset)
     password = ensure('digit', password, offset, indexes_to_pick[0])
     password = ensure('lowercase', password, offset, indexes_to_pick[1])

@@ -2,58 +2,65 @@ from math import log
 
 class WordFound(object):
     def __init__(self, word, start):
+        self.word = word 
         self.start = start
-        self.end = start + len(word)
-        self.word = word.lower()
-        self.hasLowercase = False
-        self.hasUppercase = False
+        self.end = self.start + len(word)
+        self.hasLowercase = (word != word.upper())
+        self.hasUppercase = (word != word.lower())
+        # maybe words with symbols, or chinese ?
+
+        if type(self.word) is not str:
+            raise Exception("Word is not a string")
+        elif len(self.word) == 0:
+            raise Exception("Word is empty")
+        elif type(self.start) is not int:
+            raise Exception("Start is an integer")
+        elif self.start < 0:
+            raise Exception("Start is an integer")
         
     def contains(self, other):
         if other.start >= self.start and other.end <= self.end:
-            if other.word in self.word:
-                return True # it is contained
-        if other.start >= self.start and other.start < self.end:
-            if len(other.word) <= len(self.word):
-                return True # keep the longest word if they overlapse
-        if other.end > self.start and other.end <= self.end:
-            if len(other.word) <= len(self.word):
-                return True
-        return False
+            return True # it is contained
+        if other.start in range(self.start, self.end) and other.end > self.end and len(other.word) <= len(self.word):
+            return True # keep the longest word if they overlap
+        if other.end in range(self.start+1, self.end+1) and len(other.word) <= len(self.word):
+            return True
+        else:
+            return False
     
     def __repr__(self):
         return "'" + self.word + "' (Start:"+str(self.start)+", End:"+str(self.end)+")"
     
 def evaluatePasswordDictionary(password):
-
     with open('english.txt', 'r') as f:
-        data = f.read()
-        words = set(data.split('\n'))
-    for word in words:
-        word.lower()
-    words.remove('')
-        
+        raw_data = f.read()
+    data = raw_data.split('\n')
+    dictionary = set()
+    average_length = 0
+    for w in data:
+        w = w.strip()
+        average_length += len(w)
+        dictionary.add(w)
+    average_length /= len(dictionary)
+    if '' in dictionary:
+        dictionary.remove('')
     words_found = set()
-    for word in words:
-        if word in password.lower():
-            newWord = WordFound(word, password.lower().find(word))
-            if word in password: # all are lowercase
-                newWord.hasLowercase = True
-                newWord.hasUppercase = False
-            elif word.upper() in password: # all are uppercase
-                newWord.hasLowercase = False
-                newWord.hasUppercase = True
-            else: # mix of lowercase and uppercase
-                newWord.hasLowercase = True
-                newWord.hasUppercase = True
-            toremove = set()
-            for wf in words_found:
-                if wf.contains(newWord):
-                    toremove.add(newWord)
-                elif newWord.contains(wf):
-                    toremove.add(wf)
+    for word in dictionary:
+        if word.lower() in password.lower():
+            start = password.lower().find(word)
+            realword = password[start : start + len(word)]
+            newWord = WordFound(realword, start)
+            words_contained = set()
+            for Word in words_found:
+                if Word.contains(newWord):
+                    words_contained.add(newWord)
+                elif newWord.contains(Word):
+                    words_contained.add(Word)
             words_found.add(newWord)
-            for word_contained in toremove:
-                words_found.remove(word_contained)
+            for WordContained in words_contained:
+                words_found.remove(WordContained)
+    if len(words_found) == 0:
+        return password, 0
     password_without_words = password
     for word_found in words_found:
         password_without_words = password_without_words.replace(word_found.word, "")
@@ -61,14 +68,14 @@ def evaluatePasswordDictionary(password):
     passwordHasLowercaseWord = False
     passwordHasUppercaseWord = False
     for word_found in words_found:
-        if word_found.hasLowercase:
-            passwordHasLowercaseWord = True
-        if word_found.hasUppercase:
-            passwordHasUppercaseWord = True
+        passwordHasLowercaseWord = passwordHasLowercaseWord or word_found.hasLowercase
+        passwordHasUppercaseWord = passwordHasUppercaseWord or word_found.hasUppercase
     passwordHasLowerUpperWord = passwordHasLowercaseWord and passwordHasUppercaseWord
-    allwords = len(words)*passwordHasLowercaseWord + \
-                len(words)*passwordHasUppercaseWord + \
-                pow(len(words)*passwordHasLowerUpperWord, len(words))
+    passwordHasLowercaseWord = passwordHasLowercaseWord ^ passwordHasLowerUpperWord
+    passwordHasUppercaseWord = passwordHasUppercaseWord ^ passwordHasLowerUpperWord
+    exponent = 0*passwordHasLowercaseWord + 1*passwordHasUppercaseWord + \
+               average_length*passwordHasLowerUpperWord
+    allwords = pow(2, exponent) * len(dictionary)
     possible_combinations = pow(allwords, len(words_found))
     
     return password_without_words, possible_combinations
@@ -94,14 +101,13 @@ def evaluatePasswordCharacters(password):
         
 def evaluatePassword(password):
     password_without_words, possible_combinations = evaluatePasswordDictionary(password)
-    possible_combinations += evaluatePasswordCharacters(password_without_words)
+    possible_combinations = max(possible_combinations, 1) * max(evaluatePasswordCharacters(password_without_words), 1)
     del password_without_words
-    security_bits = round(log(possible_combinations,2),2)
-    security_digits = round(log(possible_combinations,10))
+    security_bits = security_digits = 0
     safe = False
-    if log(possible_combinations,2) > 64:
-        safe = True
+    if possible_combinations > 1:
+        security_bits = round(log(possible_combinations,2),2)
+        security_digits = round(log(possible_combinations,10))
+        if log(possible_combinations,2) > 50:
+            safe = True
     return security_bits, security_digits, safe
-
-if __name__ == '__main__':
-    evaluatePasswordDictionary("Rampage2dick*tetest")

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-from robustness import evaluatePassword
-
 from hashlib import sha512
-from argon2 import PasswordHasher
 from getpass import getpass
-
+from myargon import Argon2id
+from robustness import evaluatePassword
 
 def choose_password():
     password1 = ""
@@ -27,29 +25,38 @@ def choose_password():
     del password2
     return password1
 
-def intestinize(password):
-    # see https://argon2-cffi.readthedocs.io/en/stable/parameters.html
-    password_hash = PasswordHasher().hash(password)
+def enter_birthdate():
+    birthdate1 = ""
+    birthdate2 = ""
+    matching = False
+    while not matching:
+        birthdate1 = getpass("Enter your birthdate: ")
+        birthdate2 = getpass("Enter your birthdate: ") # check format in UI later
+        matching = (birthdate1 == birthdate2)
+        if not matching:
+            print("Birthdates are not matching ! Try again.\n")
+    del birthdate2
+    return birthdate1
+
+def intestinize(password, birthdate):
+    salt = sha512(birthdate.encode('utf-8')).digest()
+    digest = Argon2id(salt_len=len(salt),                      
+                      salt=salt).hash(password)
     del password
-    return password_hash
+    digest = digest[digest.rfind('$')+1:]
+    return digest
      
-if __name__ == '__main__':
+def main():
     master_password = choose_password()
+    birthdate = enter_birthdate() #"32/43/1999"
     # We want to get rid of the master password ASAP so we hash it (512 to keep entropy)
-    password_hash = sha512(master_password.encode('utf_8')).digest()
+    digest = sha512(master_password.encode('utf_8')).digest()
     del master_password
-    
-    
-    """
-    for i in range(iterations): # should take about
-        password_hash = sha512(password_hash).digest()
-        if (i + 1) % (iterations/10) == 0:
-            print("=> "+str(100*((i+1)/float(iterations))) + " % of password digests generated")
-    """
-    password_hash = intestinize(password_hash)
-    print(password_hash)
-    
+    digest = intestinize(digest, birthdate)    
     with open('MasterPasswordDigest.txt','wb') as f:
-        f.write(password_hash.encode('utf-8')) # saved in bytes, so it will render oddly
+        f.write(digest.encode('utf-8')) # saved in bytes, so it will render oddly
     print("=> Saved to file.")
     print("=> DONE. You can now use derivatex.py")
+    
+if __name__ == "__main__":
+    main()

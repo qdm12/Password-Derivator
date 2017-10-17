@@ -22,12 +22,14 @@
 7. Make it USB portable
 8. Bring support to Android and iOS with [Kivy](https://kivy.org)
 9. Write proper documentation and update "What does it do ?"
+10. Write some C code binding to Python to securely erase memory
 
 ## Done
 - Write/Read of master password digest
 - Recovery procedure if the master password digest file is lost
 - Password generated matches all website requirements (hopefully)
 - Unique password generated for each website
+- Docstring with Sphinx
 
 ## What does it do, SIMPLIFIED 
 1. You input your *password* and *birthdate* **once** to generate the file `MasterPasswordDigest.txt`
