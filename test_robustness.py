@@ -268,41 +268,45 @@ class Functions(unittest.TestCase):
         self.assertEqual(possible_combinations, pow(10+26+26+28,7), "Number of combinations is wrong")
         
     def test_evaluatePassword_real(self):
-        password = "defaA*00000" # (26+26+28)^3 * 5
+        password = "defaA*00000" # 5^1 * (26+26+28+10)^8 = 21523360500000000
         mocked_open = mock_open(read_data='abc \n def \n abcdefghi \n klm \n opq')
         with patch('robustness.open', mocked_open, create=True):
-            security_bits, security_digits, safe = robustness.evaluatePassword(password)
+            security_bits, security_digits, safe, safer = robustness.evaluatePassword(password)
         self.assertEqual(security_bits, 54.26, "Security bits is wrong")
         self.assertEqual(security_digits, 16, "Security digits is wrong")
-        self.assertTrue(safe, "There is enough unique characters there")
+        self.assertTrue(safe, "This has 54.26 bits of security and should be safe")
+        self.assertTrue(safer, "This has 54.26 bits of security and should be safer")
         
     def test_evaluatePassword_success(self):
         password = "test"
         with patch('robustness.evaluatePasswordDictionary', return_value=[password, 100000000]):
             with patch('robustness.evaluatePasswordCharacters', return_value=200000000):
-                security_bits, security_digits, safe = robustness.evaluatePassword(password)
+                security_bits, security_digits, safe, safer = robustness.evaluatePassword(password)
         self.assertEqual(security_bits, 54.15, "Security bits is wrong")
         self.assertEqual(security_digits, 16, "Security digits is wrong")
-        self.assertTrue(safe, "This should be safe with 54+ bits")
-
-        
+        self.assertTrue(safe, "xxxxx")
+        self.assertTrue(safer, "xxxxx")
+ 
+         
     def test_evaluatePassword_fail(self):
         password = "test"
         with patch('robustness.evaluatePasswordDictionary', return_value=[password, 10]):
             with patch('robustness.evaluatePasswordCharacters', return_value=50):
-                security_bits, security_digits, safe = robustness.evaluatePassword(password)
+                security_bits, security_digits, safe, safer = robustness.evaluatePassword(password)
         self.assertEqual(security_bits, 8.97, "Security bits is wrong")
         self.assertEqual(security_digits, 3, "Security digits is wrong")
         self.assertFalse(safe, "This should not be safe")
-        
+        self.assertFalse(safer, "This should not be safe or safer")
+         
     def test_evaluatePassword_fail_empty(self):
         password = ""
         with patch('robustness.evaluatePasswordDictionary', return_value=[password, 0]):
             with patch('robustness.evaluatePasswordCharacters', return_value=0):
-                security_bits, security_digits, safe = robustness.evaluatePassword(password)
+                security_bits, security_digits, safe, safer = robustness.evaluatePassword(password)
         self.assertEqual(security_bits, 0, "Security bits is wrong")
         self.assertEqual(security_digits, 0, "Security digits is wrong")
         self.assertFalse(safe, "This an empty password and is not safe")
+        self.assertFalse(safer, "This an empty password and is not safer")
         
 
 if __name__ == "__main__":
