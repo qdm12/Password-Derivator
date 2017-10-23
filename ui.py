@@ -19,6 +19,10 @@ class Dimensions(object):
         return (self.width, self.height)
 
 class PassGenScreen(Screen):#BoxLayout
+    def __init__(self, *args, **kwargs):
+        super(PassGenScreen, self).__init__(*args, **kwargs)
+        self.pop_up = None
+    
     def on_pre_enter(self):
         self.ids["PassGenButton"].state = "down"
         
@@ -29,26 +33,33 @@ class PassGenScreen(Screen):#BoxLayout
             self.ids["new_password"].text = "Your new password"
             box = BoxLayout(orientation="vertical")
             pop_up_dim = Dimensions(0.8, 0.5)
+            
             label = Label(text="An error occurred when reading the Master Password Digest file ({}). You might want to re-run SETUP".format(str(e)),
                          text_size=(pop_up_dim.width * self.width, pop_up_dim.height * self.height),
                          halign="center", valign="middle")
+            box.add_widget(label)
+            
             subbox = BoxLayout(orientation="horizontal", spacing=0.1*self.width, padding=(0.05*self.width, 0.1*self.height))
             button_setup = Button(text="Setup", font_size=15, size_hint=(0.4,0.4))
             button_close = Button(text="Close", font_size=15, size_hint=(0.4,0.4))
             subbox.add_widget(button_setup)
             subbox.add_widget(button_close)
-            
-            
-            box.add_widget(label)
             box.add_widget(subbox)
             
             pop_up = Popup(title="File Reading error",
                            content=box,
                            size_hint=pop_up_dim.tuplize())
-
+            
+            button_setup.bind(on_press=lambda x:self._go_setup(pop_up))
+            button_close.bind(on_press=lambda x:pop_up.dismiss())
+            
             pop_up.open()
         else:
             self.ids["new_password"].text = password
+            
+    def _go_setup(self, pop_up):
+        pop_up.dismiss()
+        self.manager.current='Setup'
 
 class SetupScreen(Screen):
     def on_pre_enter(self):
@@ -63,7 +74,8 @@ class ToolsScreen(Screen):
         self.ids["ToolsButton"].state = "down"
 
 
-class DerivatexApp(App):  
+class DerivatexApp(App):
+   
     def build(self):
         sm = ScreenManager(transition=FadeTransition())
         sm.add_widget(PassGenScreen(name='PassGen')) 

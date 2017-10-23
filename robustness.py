@@ -76,14 +76,14 @@ def evaluatePasswordDictionary(password):
     exponent = 0*passwordHasLowercaseWord + 1*passwordHasUppercaseWord + \
                average_length*passwordHasLowerUpperWord
     allwords = pow(2, exponent) * len(dictionary)
-    possible_combinations = pow(allwords, len(words_found))
+    possible_combinations = int(pow(allwords, len(words_found)))
     
     return password_without_words, possible_combinations
 
 def evaluatePasswordCharacters(password):
     # Checks for the password without the common words, if any
     if password == "":
-        return 0
+        possible_combinations = 0
     else: # The password is not only common words (or does not have words at all)
         digit = upper = lower = symbol = False
         for character in password:
@@ -100,14 +100,17 @@ def evaluatePasswordCharacters(password):
     return possible_combinations
         
 def evaluatePassword(password):
-    password_without_words, possible_combinations = evaluatePasswordDictionary(password)
-    possible_combinations = max(possible_combinations, 1) * max(evaluatePasswordCharacters(password_without_words), 1)
+    password_without_words, possible_combinations_dict = evaluatePasswordDictionary(password)
+    possible_combinations_char = evaluatePasswordCharacters(password_without_words)
+    possible_combinations = max(possible_combinations_dict, 1) * max(possible_combinations_char, 1)
     del password_without_words
     security_bits = security_digits = 0
-    safe = False
+    safe = safer = False
     if possible_combinations > 1:
         security_bits = round(log(possible_combinations,2),2)
         security_digits = round(log(possible_combinations,10))
-        if log(possible_combinations,2) > 50:
+        if log(possible_combinations,2) > 30:
             safe = True
-    return security_bits, security_digits, safe
+        if log(possible_combinations,2) > 50:
+            safer = True
+    return security_bits, security_digits, safe, safer

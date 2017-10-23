@@ -22,7 +22,6 @@ class Birthdate(object):
         month = str(self.month) if len(str(self.month)) == 2 else '0' + str(self.month)
         year = str(self.year)
         return day + '/' + month + '/' + year
-    
 
 def choose_password():
     password1 = getpass("Enter your master password: ")
@@ -78,12 +77,13 @@ def setup(master_password, birthdate):
         digest = f.read()
     if not checksumIsValid(digest):
         return not success, "The digest file checksum is invalid."
-    return success, "The digest file has been saved. You can now use PassGen."   
+    return success, "The digest file has been saved. You can now use PassGen."
 
-if __name__ == "__main__":
+def main():
+    success = False
     if isfile("MasterPasswordDigest.txt"):
         if input_compat("Digest file already exists. Do you want to overwrite it? yes/no? [no]: ") != "yes":
-            return
+            return success
     valid = retry = False
     while not valid or retry:
         master_password1, master_password2 = choose_password()
@@ -96,14 +96,16 @@ if __name__ == "__main__":
         birthdate = choose_birthdate()
         valid, message = check_birthdate(birthdate)
         print(message)
-    success = retry = False
+    retry = False
     while not success or retry:
         success, message = setup(master_password1, birthdate)
         print(message)
         if not success:
             retry = input_compat("Do you want to run the procedure again? [no]") == "yes"
-    if not success:
-        print("Re-run entire setup ?") # TODO
+    return success # Re-run entire setup if fail? (failed and we don't want to re-run)
+
+if __name__ == "__main__":
+    main()
             
             
             

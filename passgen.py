@@ -13,7 +13,8 @@ def read_masterpassworddigest():
         with open('MasterPasswordDigest.txt','rb') as f:
             password_hash = f.read()
     except IOError as e:
-        raise MasterPasswordDigestException("File not found: "+str(e))
+        print("IOError: "+str(e))
+        raise MasterPasswordDigestException("File not found")
     else:
         if not checksumIsValid(password_hash):
             raise MasterPasswordDigestException("Checksum error")

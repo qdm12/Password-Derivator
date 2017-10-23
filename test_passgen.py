@@ -1,5 +1,5 @@
 import unittest
-import setup
+import passgen
 
 class MasterPasswordDigestException(unittest.TestCase):
     def test_init(self):

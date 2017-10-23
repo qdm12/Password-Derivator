@@ -1,15 +1,30 @@
 # Password-Derivator
 
+## Installation
+1. Install Python packages
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+   
+2. For the user interface:
+
+   ```shell
+   python ui.py
+   ```
+   
+3. For the Python script files:
+
+   ```shell
+   python setup.py
+   python passgen.py
+   ```
+
 ## To do
-1. Ask for birth date as a source to the number of iterations
-2. Use Argon2id with [argon2_cffi](https://pypi.python.org/pypi/argon2_cffi)
-3. Make password robustness check better
-    - Add other dictionaries
-    - Check for birthdates in password
-    - Check for common names of individuals (i.e. Trump)
-    - Check for common names of places (i.e. Paris)
-4. Do unit tests
-5. Explain how secured Derivatex is:
+- Finish User interface with [Kivy](https://kivy.org)
+- Bring support to Android and iOS with [Kivy](https://kivy.org)
+- Optional PIN code to derive password (PIN could encrypt file -> Have a check value !!!)
+- Explain how secured Derivatex is:
     - Bruteforce attacks
     - Rainbow attacks
     - Botnet/Cloud computing/ASIC based attacks
@@ -18,18 +33,30 @@
         - HTTP sniffing
         - HTTPS and NSA backdoors at certificate authorities issuing your keys
     - Loss
-6. Finish User interface with [Kivy](https://kivy.org)
-7. Make it USB portable
-8. Bring support to Android and iOS with [Kivy](https://kivy.org)
-9. Write proper documentation and update "What does it do ?"
-10. Write some C code binding to Python to securely erase memory
+- Finish unit tests, with coveralls and Travis CI
+- Docstring with Sphinx
+- Make it USB portable
+- Make password robustness check better
+    - Add other dictionaries
+    - Check for birthdates in password
+    - Check for common names of individuals (i.e. Trump)
+    - Check for common names of places (i.e. Paris)
+- Write some C code binding to Python to securely erase memory
 
 ## Done
 - Write/Read of master password digest
 - Recovery procedure if the master password digest file is lost
 - Password generated matches all website requirements (hopefully)
 - Unique password generated for each website
-- Docstring with Sphinx
+- Argon2ID
+- Unit tests for robustness.py
+- Robustness of password is calculated and transparent
+
+## To do eventually
+- SSH keys generation from file
+- AES encryption of files/directories
+- Shamir Secret sharing 
+- Show robustness of password: # of words, # of letters, # of digits etc.
 
 ## What does it do, SIMPLIFIED 
 1. You input your *password* and *birthdate* **once** to generate the file `MasterPasswordDigest.txt`
@@ -40,11 +67,11 @@
    - It is impossible to deduce the `MasterPasswordDigest.txt` file **or** the website name from this password
    - This password matches all website's passwords requirements, including at least:
       - 1 lowercase letter
-     - 1 uppercase letter
-     - 1 digit
-     - 1 symbol
-     - Equal to 30 characters in length
-     - No common words our famous names
+      - 1 uppercase letter
+      - 1 digit
+      - 1 symbol
+      - Equal to 30 characters in length
+      - No common words our famous names
 	     
 ## What does it do, LESS SIMPLIFIED
 1. The first part of the program stores the *nth* **argon2id** hash digest of your **master password** in a *file* (that should thus be **kept safe** !)
