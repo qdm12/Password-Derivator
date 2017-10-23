@@ -1,0 +1,288 @@
+<PassGenScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0, 0
+        spacing: 0.1*root.height
+        BoxLayout:
+            orientation: "horizontal"
+            padding: 0, 0
+            spacing: 0
+            size: root.width, 0.08*root.height
+            size_hint: None, None
+            ToggleButton:
+                id: PassGenButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "PassGen"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'PassGen'
+            ToggleButton:
+                id: SetupButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Setup"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Setup'
+            ToggleButton:
+                id: SettingsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Settings"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Settings'
+            ToggleButton:
+                id: ToolsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Tools"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Tools'
+        BoxLayout:
+            orientation: "vertical"
+            padding: 0.1*root.width, 0
+            TextInput:
+                padding: 0.1*root.width, 0
+                id: website_name
+                size: 0.8*root.width, 0.07*root.height
+                spacing: 10
+                size_hint: None, None
+                hint_text: "Website or company name"
+                font_size: 16
+                multiline: False
+                text_validate_unfocus: False
+                on_text_validate: root.on_submit_website(website_name.text) #new_password.text = "test"
+        BoxLayout:
+            orientation: "vertical"
+            padding: 0.3*root.width, 0
+            Button:
+                size: 0.4*root.width, 0.1*root.height
+                size_hint: None, None
+                text: "Generate password"
+                on_press: root.on_submit_website(website_name.text) # redirect to setup !
+        BoxLayout:
+            orientation: "vertical"
+            padding: 0.1*root.width, 0.1*root.height
+            Label:
+                id: new_password
+                size: 0.8*root.width, 0.07*root.height
+                size_hint: None, None
+                text: "Your new password"
+                font_size: 16
+                
+                
+                
+<SetupScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0, 0
+        spacing: 0.1*root.height
+        BoxLayout:
+            orientation: "horizontal"
+            padding: 0, 0
+            spacing: 0
+            size: root.width, 0.08*root.height
+            size_hint: None, None
+            ToggleButton:
+                id: PassGenButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "PassGen"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'PassGen'
+            ToggleButton:
+                id: SetupButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Setup"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Setup'
+            ToggleButton:
+                id: SettingsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Settings"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Settings'
+            ToggleButton:
+                id: ToolsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Tools"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Tools'
+        BoxLayout:
+            orientation: "vertical"
+            spacing: root.height * .06
+            padding: 0.1*root.width, 0
+            TextInput:
+                id: master_password
+                size: 0.8*root.width, 0.1*root.height
+                size_hint: None, None
+                hint_text: "Enter your master password"
+                font_size: 16
+                allow_copy: False
+            TextInput:
+                id: master_password2
+                size: 0.8*root.width, 0.1*root.height
+                size_hint: None, None
+                hint_text: "Enter your master password again"
+                font_size: 16
+                allow_copy: False
+        BoxLayout:
+            orientation: "vertical"
+            Label:
+                text: "Enter your birthdate below"
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: root.width * .03
+                padding: 0.125*root.width, 0
+                Spinner:
+                    text: "Day"
+                    values: [str(i) for i in range(31, 0, -1)]
+                    size: 0.25*root.width, 0.07*root.height
+                    size_hint: None, None
+                Spinner: 
+                    text: "Month"
+                    values: [str(i) for i in range(12, 1, -1)]
+                    size: 0.25*root.width, 0.07*root.height
+                    size_hint: None, None
+                Spinner:
+                    text: "Year"
+                    values: [str(i) for i in range(2017, 1940, -1)]
+                    size: 0.25*root.width, 0.07*root.height
+                    size_hint: None, None
+        BoxLayout:
+            padding: 0.2*root.width, 0.05*root.height
+            Button:
+                size: 0.6*root.width, 0.15*root.height
+                size_hint: None, None
+                text: "Save Secured Digest"
+                on_press: firstrun.save()      
+
+        
+        
+<SettingsScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0, 0
+        spacing: 0.1*root.height
+        BoxLayout:
+            orientation: "horizontal"
+            padding: 0, 0
+            spacing: 0
+            size: root.width, 0.08*root.height
+            size_hint: None, None
+            ToggleButton:
+                id: PassGenButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "PassGen"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'PassGen'
+            ToggleButton:
+                id: SetupButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Setup"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Setup'
+            ToggleButton:
+                id: SettingsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Settings"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Settings'
+            ToggleButton:
+                id: ToolsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Tools"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Tools'
+
+
+
+<ToolsScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0, 0
+        spacing: 0.1*root.height
+        BoxLayout:
+            orientation: "horizontal"
+            padding: 0, 0
+            spacing: 0
+            size: root.width, 0.08*root.height
+            size_hint: None, None
+            ToggleButton:
+                id: PassGenButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "PassGen"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'PassGen'
+            ToggleButton:
+                id: SetupButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Setup"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Setup'
+            ToggleButton:
+                id: SettingsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Settings"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Settings'
+            ToggleButton:
+                id: ToolsButton
+                size: 0.25*root.width, 0.08*root.height
+                size_hint: None, None
+                text: "Tools"
+                font_size: 20
+                group: "navigation"
+                state: "normal"
+                on_press: root.manager.current = 'Tools'
+
+
+
+
+
+
+
+
+
+
+
+
