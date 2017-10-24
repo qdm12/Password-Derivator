@@ -13,7 +13,7 @@ def read_masterpassworddigest():
         raise MasterPasswordDigestException("File not found")
     try:
         with open('MasterPasswordDigest.txt','rb') as f:
-            password_hash = f.read()
+            password_hash = f.read().decode('utf-8')
     except IOError as e:
         print("IOError: "+str(e))
         raise MasterPasswordDigestException(str(e))
@@ -24,20 +24,16 @@ def read_masterpassworddigest():
             return password_hash
 
 def intestinize(masterpassworddigest, website_name):
-    password = masterpassworddigest + website_name.encode('utf_8')
+    password = masterpassworddigest + website_name
     salt = sha512(website_name.encode('utf-8')).digest()
     digest = Argon2id(salt_len=len(salt),                      
                       salt=salt,
                       hash_len=22,
                       memory_cost=33554,
-                      time_cost=100).hash(password)
+                      time_cost=100).hash(password.encode('utf-8'))
     del password, salt
     digest = digest[digest.rfind('$')+1:]
     return digest[:30]
-
-
-    digest = sha512(password).digest()
-    return digest
 
 def find_indexestopick(password, offset):
     indexes_to_pick = []

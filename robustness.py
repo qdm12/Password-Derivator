@@ -42,8 +42,13 @@ def evaluatePasswordDictionary(password):
         average_length += len(w)
         dictionary.add(w)
     average_length /= len(dictionary)
-    if '' in dictionary:
-        dictionary.remove('')
+    to_remove = set()
+    for word in dictionary:
+        if len(word) < 2:
+            to_remove.add(word)
+    for word in to_remove:
+        dictionary.remove(word)
+    del to_remove    
     words_found = set()
     for word in dictionary:
         if word.lower() in password.lower():

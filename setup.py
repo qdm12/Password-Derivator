@@ -5,6 +5,7 @@ from getpass import getpass
 from myargon import Argon2id
 from robustness import evaluatePassword
 from tools import input_compat, isMasterpassworddigestfilePresent
+import os
 
 class Birthdate(object):
     def __init__(self, raw_birthdate):
@@ -28,7 +29,7 @@ def choose_password():
     return password1, password2
 
 def choose_birthdate():
-    return input_compat("Enter your birthdate: ")
+    return input_compat("Enter your birthdate (dd/mm/yyyy): ")
 
 def check_master_password(master_password1, master_password2):
     valid = True
@@ -45,10 +46,6 @@ def check_master_password(master_password1, master_password2):
                         "Would you like to enter a more complex password?"
     return valid, safer, message + "Your password is safe, good job."
 
-def check_birthdate(birthdate):
-    valid = True
-    return valid, "Birthdate is valid"
-
 def intestinize(password, birthdate):
     salt = sha512(str(birthdate).encode('utf-8')).digest()
     time_cost = 0
@@ -57,11 +54,11 @@ def intestinize(password, birthdate):
     digest = Argon2id(time_cost=time_cost, salt=salt).hash(password)
     del password
     digest = digest[digest.rfind('$')+1:]
-    digest = digest + sha512(digest).digest()[0:4] # checksum
+    digest = digest + str(sha512(digest.encode('utf-8')).digest())[:4] # checksum
     return digest
 
 def checksumIsValid(digest):
-    return digest[-4:] == sha512(digest[:-4]).digest()
+    return digest[-4:] == str(sha512(digest[:-4].encode('utf-8')).digest())[:4]
 
 def setup(master_password, birthdate):
     success = True
@@ -71,10 +68,11 @@ def setup(master_password, birthdate):
     del master_password
     digest = intestinize(digest, birthdate)    
     with open('MasterPasswordDigest.txt','wb') as f:
-        f.write(digest.encode('utf-8')) # saved in bytes, so it will render oddly
+        f.write(digest.encode('utf-8'))
     with open('MasterPasswordDigest.txt','rb') as f:
-        digest = f.read()
+        digest = f.read().decode('utf-8')
     if not checksumIsValid(digest):
+        os.remove('MasterPasswordDigest.txt')
         return not success, "The digest file checksum is invalid."
     return success, "The digest file has been saved. You can now use PassGen."
 
@@ -90,11 +88,7 @@ def main():
         print(message)
         if valid and not safer:
             retry = input_compat("yes/no? [no]") == 'yes'
-    valid = False
-    while not valid:
-        birthdate = choose_birthdate()
-        valid, message = check_birthdate(birthdate)
-        print(message)
+    birthdate = choose_birthdate()
     retry = False
     while not success or retry:
         success, message = setup(master_password1, birthdate)

@@ -59,6 +59,7 @@
                 multiline: False
                 text_validate_unfocus: False
                 on_text_validate: root.on_submit_website(website_name.text)
+                write_tab: False
         BoxLayout:
             orientation: "vertical"
             padding: 0.3*root.width, 0
@@ -137,6 +138,7 @@
                 hint_text: "Enter your master password"
                 font_size: 16
                 allow_copy: False
+                write_tab: False
             TextInput:
                 id: master_password2
                 size: 0.8*root.width, 0.1*root.height
@@ -144,6 +146,7 @@
                 hint_text: "Enter your master password again"
                 font_size: 16
                 allow_copy: False
+                write_tab: False
         BoxLayout:
             orientation: "vertical"
             spacing: 0
