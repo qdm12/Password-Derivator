@@ -22,6 +22,7 @@
 
 ## To do
 - Finish User interface with [Kivy](https://kivy.org)
+    - Loading animation for PassGen
 - Bring support to Android and iOS with [Kivy](https://kivy.org)
 - Optional PIN code to derive password (PIN could encrypt file -> Have a check value !!!)
 - Explain how secured Derivatex is:

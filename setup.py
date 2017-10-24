@@ -6,6 +6,7 @@ from myargon import Argon2id
 from robustness import evaluatePassword
 from tools import input_compat, isMasterpassworddigestfilePresent
 import os
+from time import time
 
 class Birthdate(object):
     def __init__(self, raw_birthdate):
@@ -48,9 +49,7 @@ def check_master_password(master_password1, master_password2):
 
 def intestinize(password, birthdate):
     salt = sha512(str(birthdate).encode('utf-8')).digest()
-    time_cost = 0
-    while time_cost not in range(30, 50):
-        time_cost += birthdate.sum() % 50  
+    time_cost = get_time_cost(birthdate)
     digest = Argon2id(time_cost=time_cost, salt=salt).hash(password)
     del password
     digest = digest[digest.rfind('$')+1:]
@@ -60,9 +59,15 @@ def intestinize(password, birthdate):
 def checksumIsValid(digest):
     return digest[-4:] == str(sha512(digest[:-4].encode('utf-8')).digest())[:4]
 
+def get_time_cost(birthdate):
+    birthdate = Birthdate(birthdate)
+    time_cost = 0
+    while time_cost not in range(80, 120):
+        time_cost += birthdate.sum() % 120
+    return time_cost
+
 def setup(master_password, birthdate):
     success = True
-    birthdate = Birthdate(birthdate)
     # We want to get rid of the master password ASAP so we hash it (512 to keep entropy)
     digest = sha512(master_password.encode('utf_8')).digest()
     del master_password

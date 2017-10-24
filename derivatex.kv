@@ -1,12 +1,9 @@
 <PassGenScreen>:
     BoxLayout:
         orientation: "vertical"
-        padding: 0, 0
         spacing: 0.1*root.height
         BoxLayout:
             orientation: "horizontal"
-            padding: 0, 0
-            spacing: 0
             size: root.width, 0.08*root.height
             size_hint: None, None
             ToggleButton:
@@ -49,10 +46,9 @@
             orientation: "vertical"
             padding: 0.1*root.width, 0
             TextInput:
-                padding: 0.1*root.width, 0
+                padding: self.width/16, self.height/4
                 id: website_name
-                size: 0.8*root.width, 0.07*root.height
-                spacing: 10
+                size: 0.8*root.width, 0.08*root.height
                 size_hint: None, None
                 hint_text: "Website or company name"
                 font_size: 16
@@ -67,6 +63,7 @@
                 size: 0.4*root.width, 0.1*root.height
                 size_hint: None, None
                 text: "Generate password"
+                font_size: 16
                 on_press: root.on_submit_website(website_name.text)
         BoxLayout:
             orientation: "vertical"
@@ -77,18 +74,16 @@
                 size_hint: None, None
                 text: "Your new password"
                 font_size: 16
+        BoxLayout:
                 
                 
                 
 <SetupScreen>:
     BoxLayout:
         orientation: "vertical"
-        padding: 0, 0
         spacing: 0.1*root.height
         BoxLayout:
             orientation: "horizontal"
-            padding: 0, 0
-            spacing: 0
             size: root.width, 0.08*root.height
             size_hint: None, None
             ToggleButton:
@@ -129,56 +124,58 @@
                 on_press: root.manager.current = 'Tools'
         BoxLayout:
             orientation: "vertical"
-            spacing: root.height * .03
+            spacing: root.height * 0.03
             padding: 0.1*root.width, 0
             TextInput:
                 id: master_password1
-                size: 0.8*root.width, 0.1*root.height
+                size: 0.8*root.width, 0.06*root.height
                 size_hint: None, None
                 hint_text: "Enter your master password"
                 font_size: 16
+                padding: self.width / 16, self.height / 4 
                 allow_copy: False
                 write_tab: False
             TextInput:
                 id: master_password2
-                size: 0.8*root.width, 0.1*root.height
+                size: 0.8*root.width, 0.06*root.height
                 size_hint: None, None
                 hint_text: "Enter your master password again"
                 font_size: 16
+                padding: self.width / 16, self.height / 4
                 allow_copy: False
                 write_tab: False
         BoxLayout:
             orientation: "vertical"
-            spacing: 0
             Label:
                 text: "Enter your birthdate below"
             BoxLayout:
                 orientation: "horizontal"
-                spacing: root.width * .03
-                padding: 0.125*root.width, 0
+                spacing: root.width * 0.1
+                padding: 0.1*root.width
                 Spinner:
                     id: day
                     text: "Day"
                     values: [str(i) for i in range(31, 0, -1)]
-                    size: 0.25*root.width, 0.07*root.height
+                    size: 0.2*root.width, 0.07*root.height
                     size_hint: None, None
                 Spinner:
                     id: month
                     text: "Month"
                     values: [str(i) for i in range(12, 1, -1)]
-                    size: 0.25*root.width, 0.07*root.height
+                    size: 0.2*root.width, 0.07*root.height
                     size_hint: None, None
                 Spinner:
                     id: year
                     text: "Year"
                     values: [str(i) for i in range(2017, 1940, -1)]
-                    size: 0.25*root.width, 0.07*root.height
+                    size: 0.2*root.width, 0.07*root.height
                     size_hint: None, None
         BoxLayout:
-            padding: 0.2*root.width, 0.05*root.height
+            padding: 0.25*root.width, 0.07*root.height
             Button:
-                size: 0.6*root.width, 0.15*root.height
+                size: 0.5*root.width, 0.1*root.height
                 size_hint: None, None
+                font_size: 16
                 text: "Save Secured Digest"
                 on_press: root.on_submit_credentials(master_password1.text, master_password2.text, day.text, month.text, year.text)      
 
@@ -231,7 +228,7 @@
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Tools'
-
+        BoxLayout:
 
 
 <ToolsScreen>:
@@ -281,9 +278,7 @@
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Tools'
-
-
-
+        BoxLayout:
 
 
 
