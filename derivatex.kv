@@ -58,7 +58,7 @@
                 font_size: 16
                 multiline: False
                 text_validate_unfocus: False
-                on_text_validate: root.on_submit_website(website_name.text) #new_password.text = "test"
+                on_text_validate: root.on_submit_website(website_name.text)
         BoxLayout:
             orientation: "vertical"
             padding: 0.3*root.width, 0
@@ -128,10 +128,10 @@
                 on_press: root.manager.current = 'Tools'
         BoxLayout:
             orientation: "vertical"
-            spacing: root.height * .06
+            spacing: root.height * .03
             padding: 0.1*root.width, 0
             TextInput:
-                id: master_password
+                id: master_password1
                 size: 0.8*root.width, 0.1*root.height
                 size_hint: None, None
                 hint_text: "Enter your master password"
@@ -146,6 +146,7 @@
                 allow_copy: False
         BoxLayout:
             orientation: "vertical"
+            spacing: 0
             Label:
                 text: "Enter your birthdate below"
             BoxLayout:
@@ -153,16 +154,19 @@
                 spacing: root.width * .03
                 padding: 0.125*root.width, 0
                 Spinner:
+                    id: day
                     text: "Day"
                     values: [str(i) for i in range(31, 0, -1)]
                     size: 0.25*root.width, 0.07*root.height
                     size_hint: None, None
-                Spinner: 
+                Spinner:
+                    id: month
                     text: "Month"
                     values: [str(i) for i in range(12, 1, -1)]
                     size: 0.25*root.width, 0.07*root.height
                     size_hint: None, None
                 Spinner:
+                    id: year
                     text: "Year"
                     values: [str(i) for i in range(2017, 1940, -1)]
                     size: 0.25*root.width, 0.07*root.height
@@ -173,7 +177,7 @@
                 size: 0.6*root.width, 0.15*root.height
                 size_hint: None, None
                 text: "Save Secured Digest"
-                on_press: firstrun.save()      
+                on_press: root.on_submit_credentials(master_password1.text, master_password2.text, day.text, month.text, year.text)      
 
         
         

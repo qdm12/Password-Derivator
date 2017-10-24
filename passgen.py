@@ -3,18 +3,20 @@
 from hashlib import sha512
 from myargon import Argon2id
 from setup import checksumIsValid
-from tools import input_compat
+from tools import input_compat, isMasterpassworddigestfilePresent
 
 class MasterPasswordDigestException(Exception):
     pass
 
 def read_masterpassworddigest():
+    if not isMasterpassworddigestfilePresent():
+        raise MasterPasswordDigestException("File not found")
     try:
         with open('MasterPasswordDigest.txt','rb') as f:
             password_hash = f.read()
     except IOError as e:
         print("IOError: "+str(e))
-        raise MasterPasswordDigestException("File not found")
+        raise MasterPasswordDigestException(str(e))
     else:
         if not checksumIsValid(password_hash):
             raise MasterPasswordDigestException("Checksum error")

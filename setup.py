@@ -4,8 +4,7 @@ from hashlib import sha512
 from getpass import getpass
 from myargon import Argon2id
 from robustness import evaluatePassword
-from os.path import isfile
-from tools import input_compat
+from tools import input_compat, isMasterpassworddigestfilePresent
 
 class Birthdate(object):
     def __init__(self, raw_birthdate):
@@ -35,12 +34,12 @@ def check_master_password(master_password1, master_password2):
     valid = True
     safer = True
     if not master_password1 == master_password2:
-        return not valid, not safer, "Passwords do not match"
+        return not valid, not safer, "Passwords do not match. Please try again."
     security_bits, security_digits, safe, _safer = evaluatePassword(master_password1)
     message = "Your password has a security of "+str(security_bits)+" bits, equivalent to " + \
                "a suitcase lock of "+str(security_digits)+" digits. "
     if not safe:
-        return not valid, not safer, message + "This is not safe. Enter a more complex password." 
+        return not valid, not safer, message + "This is not safe. Please try again with a more complex password." 
     if not _safer:
         return valid, not safer, message + "Your password has a weak security. " + \
                         "Would you like to enter a more complex password?"
@@ -81,7 +80,7 @@ def setup(master_password, birthdate):
 
 def main():
     success = False
-    if isfile("MasterPasswordDigest.txt"):
+    if isMasterpassworddigestfilePresent():
         if input_compat("Digest file already exists. Do you want to overwrite it? yes/no? [no]: ") != "yes":
             return success
     valid = retry = False
