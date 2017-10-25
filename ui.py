@@ -14,7 +14,7 @@ from kivy.uix.progressbar import ProgressBar
 from threading import Thread
 from time import time
 
-TIMER_PER_TIMECOST = 0.4 # slow device
+TIME_PER_TIMECOST = 0.4 # slow device
 
 class Dimensions(object):
     def __init__(self, width, height):
@@ -90,6 +90,7 @@ class SetupScreen(Screen):
         self.p2 = None
         self.birthdate = None
         self.progress = None
+        global TIME_PER_TIMECOST
         
     def on_pre_enter(self):
         self.ids["PassGenButton"].state = "normal"
@@ -173,8 +174,9 @@ class SetupScreen(Screen):
         
     def animate_progress(self):
         start = time()
+        print("Using TIME_PER_TIMECOST: ", TIME_PER_TIMECOST)
         while self.pop_up is not None:
-            self.progress.value = (time() - start) / TIMER_PER_TIMECOST
+            self.progress.value = (time() - start) / TIME_PER_TIMECOST
         self.progress = None
             
     def continue_part3(self):
@@ -223,11 +225,11 @@ class ToolsScreen(Screen):
     def on_pre_enter(self):
         self.ids["ToolsButton"].state = "down"
 
-class DerivatexApp(App):
-    
+class DerivatexApp(App):    
     def find_performance_argon(self):
-        TIMER_PER_TIMECOST = get_time_per_time_cost(16)
-        print("TIMER_PER_TIMECOST = ", TIMER_PER_TIMECOST)
+        global TIME_PER_TIMECOST
+        TIME_PER_TIMECOST = get_time_per_time_cost(16)
+        print("TIME_PER_TIMECOST = ", TIME_PER_TIMECOST)
    
     def build(self):
         sm = ScreenManager(transition=FadeTransition())

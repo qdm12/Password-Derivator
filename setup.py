@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from hashlib import sha512
+from hashlib import sha3_256
 from getpass import getpass
 from myargon import Argon2id
 from robustness import evaluatePassword
@@ -48,16 +48,16 @@ def check_master_password(master_password1, master_password2):
     return valid, safer, message + "Your password is safe, good job."
 
 def intestinize(password, birthdate):
-    salt = sha512(str(birthdate).encode('utf-8')).digest()
+    salt = sha3_256(str(birthdate).encode('utf-8')).digest()
     time_cost = get_time_cost(birthdate)
     digest = Argon2id(time_cost=time_cost, salt=salt).hash(password)
     del password
     digest = digest[digest.rfind('$')+1:]
-    digest = digest + str(sha512(digest.encode('utf-8')).digest())[:4] # checksum
+    digest = digest + str(sha3_256(digest.encode('utf-8')).digest())[:4] # checksum
     return digest
 
 def checksumIsValid(digest):
-    return digest[-4:] == str(sha512(digest[:-4].encode('utf-8')).digest())[:4]
+    return digest[-4:] == str(sha3_256(digest[:-4].encode('utf-8')).digest())[:4]
 
 def get_time_cost(birthdate):
     birthdate = Birthdate(birthdate)
@@ -74,7 +74,7 @@ def get_time_per_time_cost(iterations=8):
 def setup(master_password, birthdate):
     success = True
     # We want to get rid of the master password ASAP so we hash it (512 to keep entropy)
-    digest = sha512(master_password.encode('utf_8')).digest()
+    digest = sha3_256(master_password.encode('utf_8')).digest()
     del master_password
     digest = intestinize(digest, birthdate)    
     with open('MasterPasswordDigest.txt','wb') as f:

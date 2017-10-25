@@ -54,6 +54,7 @@
 - Unit tests for robustness.py
 - Robustness of password is calculated and transparent
 - basic UI
+- Uses SHA3
 
 ## To do eventually
 - SSH keys generation from file

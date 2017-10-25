@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from hashlib import sha512
+from hashlib import sha3_256
 from myargon import Argon2id
 from setup import checksumIsValid
 from tools import input_compat, isMasterpassworddigestfilePresent
@@ -26,7 +26,7 @@ def read_masterpassworddigest():
 def intestinize(masterpassworddigest, website_name):
     password = masterpassworddigest + website_name
     # can't bruteforce password really so we set time_cost to 1
-    salt = sha512(website_name.encode('utf-8')).digest()
+    salt = sha3_256(website_name.encode('utf-8')).digest()
     digest = Argon2id(salt_len=len(salt),                      
                       salt=salt,
                       hash_len=22,
@@ -36,17 +36,8 @@ def intestinize(masterpassworddigest, website_name):
     digest = digest[digest.rfind('$')+1:]
     return digest[:30]
 
-def find_indexestopick(password, offset):
-    indexes_to_pick = []
-    index = 1
-    for _ in range(4): # digit + letter + uppercase + symbol
-        index = (index * offset) % len(password)
-        while index in indexes_to_pick: # we want a different index
-            index = (index * offset + 1) % len(password)
-        indexes_to_pick.append(index)
-    return indexes_to_pick
-
 def ensure(characterType, password, offset, i):
+    print("Ensuring "+characterType+" at index "+str(i))
     if characterType == 'digit':
         targetRange = range(48,57)
     elif characterType == 'lowercase':
@@ -62,16 +53,35 @@ def ensure(characterType, password, offset, i):
         character_value = (character_value + offset) % 127
     return password[0 : i] + chr(character_value) + password[i+1 : ]
 
+def find_characterType(c):
+    if c.isdigit():
+        return "digit"
+    elif c.isupper():
+        return "uppercase"
+    elif c.islower():
+        return "lowercase"
+    else:
+        return "symbol"
+
+def ensure_characters(password):
+    passwordHas = {"digit":0, "lowercase":0, "uppercase":0, "symbol":0}
+    for c in password:
+        passwordHas[find_characterType(c)] += 1
+    offset = int(sha3_256(password.encode('utf-8')).digest().hex(), 16)
+    for characterType in passwordHas:
+        if passwordHas[characterType] == 0:
+            print("Character type "+characterType+" is missing")
+            index = offset % len(password)
+            while passwordHas[find_characterType(password[index])] <= 1:
+                index = (index*offset +1) % len(password)
+            password = ensure(characterType, password, offset, index) 
+    return password
+
 def passgen(website_name):
     masterpassworddigest = read_masterpassworddigest()
     password = intestinize(masterpassworddigest, website_name)
     # We make sure the password will have 1 digit, 1 letter, 1 uppercase letter and 1 symbol
-    offset = int(sha512(password.encode('utf-8')).digest().hex(), 16) # Integer value of digest
-    indexes_to_pick = find_indexestopick(password, offset)
-    password = ensure('digit', password, offset, indexes_to_pick[0])
-    password = ensure('lowercase', password, offset, indexes_to_pick[1])
-    password = ensure('uppercase', password, offset, indexes_to_pick[2])
-    password = ensure('symbol', password, offset, indexes_to_pick[3])
+    password = ensure_characters(password)
     return password
 
 if __name__ == '__main__':
