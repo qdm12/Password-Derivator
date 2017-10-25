@@ -1,5 +1,6 @@
 from passgen import passgen, MasterPasswordDigestException, isMasterpassworddigestfilePresent
-from setup import setup, check_master_password, get_time_cost
+from setup import setup, check_master_password, get_time_cost,\
+    get_time_per_time_cost
 
 from kivy.app import App  
 from kivy.uix.popup import Popup  
@@ -13,6 +14,7 @@ from kivy.uix.progressbar import ProgressBar
 from threading import Thread
 from time import time
 
+TIMER_PER_TIMECOST = 0.4 # slow device
 
 class Dimensions(object):
     def __init__(self, width, height):
@@ -172,7 +174,7 @@ class SetupScreen(Screen):
     def animate_progress(self):
         start = time()
         while self.pop_up is not None:
-            self.progress.value = (time() - start) / 0.054
+            self.progress.value = (time() - start) / TIMER_PER_TIMECOST
         self.progress = None
             
     def continue_part3(self):
@@ -221,8 +223,11 @@ class ToolsScreen(Screen):
     def on_pre_enter(self):
         self.ids["ToolsButton"].state = "down"
 
-
 class DerivatexApp(App):
+    
+    def find_performance_argon(self):
+        TIMER_PER_TIMECOST = get_time_per_time_cost(16)
+        print("TIMER_PER_TIMECOST = ", TIMER_PER_TIMECOST)
    
     def build(self):
         sm = ScreenManager(transition=FadeTransition())
@@ -234,6 +239,8 @@ class DerivatexApp(App):
             sm.current = 'Setup'
         else:
             sm.current = 'PassGen'
+        # finds machine performance
+        Thread(target=self.find_performance_argon).start()
         return sm
 
 if __name__ == "__main__":  

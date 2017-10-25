@@ -25,12 +25,13 @@ def read_masterpassworddigest():
 
 def intestinize(masterpassworddigest, website_name):
     password = masterpassworddigest + website_name
+    # can't bruteforce password really so we set time_cost to 1
     salt = sha512(website_name.encode('utf-8')).digest()
     digest = Argon2id(salt_len=len(salt),                      
                       salt=salt,
                       hash_len=22,
                       memory_cost=33554,
-                      time_cost=100).hash(password.encode('utf-8'))
+                      time_cost=1).hash(password.encode('utf-8'))
     del password, salt
     digest = digest[digest.rfind('$')+1:]
     return digest[:30]

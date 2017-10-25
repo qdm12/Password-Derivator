@@ -22,9 +22,10 @@
 
 ## To do
 - Finish User interface with [Kivy](https://kivy.org)
-    - Loading animation for PassGen
+    - Colors and better experience
+    - Add settings, tools
+- Make it USB portable
 - Bring support to Android and iOS with [Kivy](https://kivy.org)
-- Optional PIN code to derive password (PIN could encrypt file -> Have a check value !!!)
 - Explain how secured Derivatex is:
     - Bruteforce attacks
     - Rainbow attacks
@@ -36,7 +37,7 @@
     - Loss
 - Finish unit tests, with coveralls and Travis CI
 - Docstring with Sphinx
-- Make it USB portable
+- Optional PIN code to derive password (PIN could encrypt file -> Have a check value !!!)
 - Make password robustness check better
     - Add other dictionaries
     - Check for birthdates in password
@@ -52,6 +53,7 @@
 - Argon2ID
 - Unit tests for robustness.py
 - Robustness of password is calculated and transparent
+- basic UI
 
 ## To do eventually
 - SSH keys generation from file

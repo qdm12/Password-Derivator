@@ -66,6 +66,11 @@ def get_time_cost(birthdate):
         time_cost += birthdate.sum() % 120
     return time_cost
 
+def get_time_per_time_cost(iterations=8):
+    start = time()
+    Argon2id(time_cost=iterations).hash("xxxxx")
+    return (time() - start)/iterations
+
 def setup(master_password, birthdate):
     success = True
     # We want to get rid of the master password ASAP so we hash it (512 to keep entropy)
