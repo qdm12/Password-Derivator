@@ -5,32 +5,8 @@ from getpass import getpass
 from myargon import Argon2id
 from robustness import evaluatePassword
 from tools import input_compat, isMasterpassworddigestfilePresent
-import os
+from os import remove
 from time import time
-
-class Birthdate(object):
-    def __init__(self, raw_birthdate):
-        fields = raw_birthdate.split('/') # to change or check format
-        self.day = int(fields[0])
-        self.month = int(fields[1])
-        self.year = int(fields[2])
-        
-    def sum(self):
-        return self.day + self.month + self.year
-    
-    def __repr__(self):
-        day = str(self.day) if len(str(self.day)) == 2 else '0' + str(self.day)
-        month = str(self.month) if len(str(self.month)) == 2 else '0' + str(self.month)
-        year = str(self.year)
-        return day + '/' + month + '/' + year
-
-def choose_password():
-    password1 = getpass("Enter your master password: ")
-    password2 = getpass("Enter your master password again: ")
-    return password1, password2
-
-def choose_birthdate():
-    return input_compat("Enter your birthdate (dd/mm/yyyy): ")
 
 def check_master_password(master_password1, master_password2):
     valid = True
@@ -60,10 +36,11 @@ def checksumIsValid(digest):
     return digest[-4:] == str(sha3_256(digest[:-4].encode('utf-8')).digest())[:4]
 
 def get_time_cost(birthdate):
-    birthdate = Birthdate(birthdate)
+    birthdate = birthdate.split('/')
+    offset = int(birthdate[0]) + int(birthdate[1]) + int(birthdate[2])
     time_cost = 0
     while time_cost not in range(80, 120):
-        time_cost += birthdate.sum() % 120
+        time_cost = time_cost + offset % 120
     return time_cost
 
 def get_time_per_time_cost(iterations=8):
@@ -82,7 +59,7 @@ def setup(master_password, birthdate):
     with open('MasterPasswordDigest.txt','rb') as f:
         digest = f.read().decode('utf-8')
     if not checksumIsValid(digest):
-        os.remove('MasterPasswordDigest.txt')
+        remove('MasterPasswordDigest.txt')
         return not success, "The digest file checksum is invalid."
     return success, "The digest file has been saved. You can now use PassGen."
 
@@ -93,12 +70,13 @@ def main():
             return success
     valid = retry = False
     while not valid or retry:
-        master_password1, master_password2 = choose_password()
+        master_password1 = getpass("Enter your master password: ")
+        master_password2 = getpass("Enter your master password again: ")
         valid, safer, message = check_master_password(master_password1, master_password2)
         print(message)
         if valid and not safer:
             retry = input_compat("yes/no? [no]") == 'yes'
-    birthdate = choose_birthdate()
+    birthdate = input_compat("Enter your birthdate (dd/mm/yyyy): ")
     retry = False
     while not success or retry:
         success, message = setup(master_password1, birthdate)
