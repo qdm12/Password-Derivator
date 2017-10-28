@@ -1,5 +1,5 @@
 from passgen import passgen, MasterPasswordDigestException, isMasterpassworddigestfilePresent
-from setup import setup, check_master_password, time_cost,\
+from setup import setup, check_master_password, get_time_cost,\
     get_time_per_time_cost
 
 from kivy.app import App  
@@ -159,7 +159,7 @@ class SetupScreen(Screen):
     def continue_part2(self):
         self.p2 = None
         box = BoxLayout(orientation="vertical", padding=(0.1*self.width, 0.1*self.height))
-        time_needed = time_cost(self.birthdate)
+        time_needed = get_time_cost(self.birthdate)
         self.progress = ProgressBar(max=time_needed)
         box.add_widget(self.progress)
         pop_up_dim = Dimensions(0.8, 0.5)
@@ -176,7 +176,7 @@ class SetupScreen(Screen):
         start = time()
         print("Using TIME_PER_TIMECOST: ", TIME_PER_TIMECOST)
         while self.pop_up is not None:
-            sleep(0.01) # TODO maybe remove
+            sleep(0.03)
             self.progress.value = (time() - start) / TIME_PER_TIMECOST
         self.progress = None
             

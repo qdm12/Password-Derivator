@@ -32,7 +32,7 @@ def get_time_cost(birthdate):
     offset = int(birthdate[0]) + int(birthdate[1]) + int(birthdate[2])
     time_cost = 0
     while time_cost not in range(80, 120):
-        time_cost = time_cost + offset % 120
+        time_cost = (time_cost + offset) % 120
     return time_cost
 
 def intestinize(password, birthdate):
