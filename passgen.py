@@ -13,9 +13,8 @@ def read_masterpassworddigest():
         raise MasterPasswordDigestException("File not found")
     try:
         with open('MasterPasswordDigest.txt','rb') as f:
-            password_hash = f.read().decode('utf-8')
+            password_hash = f.read()
     except IOError as e:
-        print("IOError: "+str(e))
         raise MasterPasswordDigestException(str(e))
     else:
         if not checksumIsValid(password_hash):
@@ -26,18 +25,17 @@ def read_masterpassworddigest():
 def intestinize(masterpassworddigest, website_name):
     password = masterpassworddigest + website_name
     # can't bruteforce password really so we set time_cost to 1
-    salt = sha3_256(website_name.encode('utf-8')).digest()
+    salt = sha3_256(website_name).digest()
     digest = Argon2id(salt_len=len(salt),                      
                       salt=salt,
                       hash_len=22,
                       memory_cost=33554,
-                      time_cost=1).hash(password.encode('utf-8'))
+                      time_cost=1).hash(password)
     del password, salt
     digest = digest[digest.rfind('$')+1:]
     return digest[:30]
 
 def ensure(characterType, password, offset, i):
-    print("Ensuring "+characterType+" at index "+str(i))
     if characterType == 'digit':
         targetRange = range(48,57)
     elif characterType == 'lowercase':
@@ -46,8 +44,6 @@ def ensure(characterType, password, offset, i):
         targetRange = range(65,90)
     elif characterType == 'symbol':
         targetRange = list(range(33,47)) + list(range(58,64)) + list(range(91,96)) + list(range(123,126))
-    else:
-        raise Exception("This characterType is not recognized!")
     character_value = ord(password[i])
     while character_value not in targetRange:
         character_value = (character_value + offset) % 127
@@ -78,6 +74,7 @@ def ensure_characters(password):
     return password
 
 def passgen(website_name):
+    website_name = website_name.encode('utf-8')
     masterpassworddigest = read_masterpassworddigest()
     password = intestinize(masterpassworddigest, website_name)
     # We make sure the password will have 1 digit, 1 letter, 1 uppercase letter and 1 symbol
