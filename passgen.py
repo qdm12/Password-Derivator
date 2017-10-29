@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
-try: 
-    from hashlib import sha3_256 # Python 3
-except ImportError:    
-    from sha3 import sha3_256 # Python 2.7
+from tools import sha3
 from myargon import Argon2id
 from setup import checksumIsValid
-from tools import input_compat, isMasterpassworddigestfilePresent
+from tools import isMasterpassworddigestfilePresent
+
+try:
+    from builtins import input
+except ImportError:
+    from __builtins__ import raw_input as input
 
 class MasterPasswordDigestException(Exception):
     pass
@@ -16,19 +18,23 @@ def read_masterpassworddigest():
         raise MasterPasswordDigestException("File not found")
     try:
         with open('MasterPasswordDigest.txt','rb') as f:
-            password_hash = f.read()
+            digest_and_checksum = f.read()
     except IOError as e:
         raise MasterPasswordDigestException(str(e))
     else:
-        if not checksumIsValid(password_hash):
+        if not checksumIsValid(digest_and_checksum):
             raise MasterPasswordDigestException("Checksum error")
         else:
-            return password_hash
+            digest = digest_and_checksum[:-4]
+            return digest
 
 def intestinize(masterpassworddigest, website_name):
+    """
+        Returns a string (not bytes) of readable characters
+    """    
     Input = masterpassworddigest + website_name
     # can't bruteforce password really so we set time_cost to 1
-    salt = sha3_256(website_name).digest()
+    salt = sha3(website_name)
     digest = Argon2id(salt=salt,
                       hash_len=22, # for 31 characters
                       memory_cost=33554,
@@ -37,7 +43,7 @@ def intestinize(masterpassworddigest, website_name):
     digest = digest[digest.rfind('$')+1:]
     return digest[:30]
 
-def ensure(characterType, password, offset, i):
+def ensure(characterType, password, i):
     if characterType == 'digit':
         targetRange = range(48,57)
     elif characterType == 'lowercase':
@@ -46,9 +52,9 @@ def ensure(characterType, password, offset, i):
         targetRange = range(65,90)
     elif characterType == 'symbol':
         targetRange = list(range(33,47)) + list(range(58,64)) + list(range(91,96)) + list(range(123,126))
-    character_value = ord(password[i])
+    character_value = int(sha3(password[i], hexa=True), 16)
     while character_value not in targetRange:
-        character_value = (character_value + offset) % 127
+        character_value = (character_value + 3) % 127
     return password[0 : i] + chr(character_value) + password[i+1 : ]
 
 def find_characterType(c):
@@ -62,17 +68,19 @@ def find_characterType(c):
         return "symbol"
     
 def ensure_characters(password):
+    """
+        password is meant to be longer than 3 characters
+    """
     passwordHas = {"digit":0, "lowercase":0, "uppercase":0, "symbol":0}
     for c in password:
         passwordHas[find_characterType(c)] += 1
-    offset = int(sha3_256(password.encode('utf-8')).hexdigest(), 16)
     for characterType in passwordHas:
         if passwordHas[characterType] == 0:
-            print("Character type "+characterType+" is missing")
-            index = offset % len(password)
+            # print("Character type "+characterType+" is missing")
+            index = int(sha3(password, hexa=True), 16) % len(password)
             while passwordHas[find_characterType(password[index])] <= 1:
-                index = (index*offset +1) % len(password)
-            password = ensure(characterType, password, offset, index) 
+                index = (index + 3) % len(password)
+            password = ensure(characterType, password, index) 
     return password
 
 def passgen(website_name):
@@ -84,6 +92,6 @@ def passgen(website_name):
     return password
 
 if __name__ == '__main__':
-    website_name = input_compat("Enter the website name: ")
+    website_name = input("Enter the website name: ")
     password = passgen(website_name)
     print("=> Your password is: "+str(password))

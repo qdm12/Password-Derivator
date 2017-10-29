@@ -1,10 +1,11 @@
 from unittest import TestCase
-
 try: 
     from unittest.mock import patch, mock_open # Python 3
 except ImportError:    
     from mock import patch, mock_open # Python 2.7
+
 import passgen
+
 
 class MasterPasswordDigestException(TestCase):
     def test_init(self):
@@ -22,17 +23,17 @@ class Functions(TestCase):
     def test_read_masterpassworddigest_success(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = True
         mock_checksumIsValid.return_value = True
-        mocked_open = mock_open(read_data=b'digestCHECKSUM')
+        mocked_open = mock_open(read_data=b'digestCSUM')
         with patch('passgen.open', mocked_open, create=True):
             password_hash = passgen.read_masterpassworddigest()
-        self.assertEqual(password_hash, b'digestCHECKSUM')
+        self.assertEqual(password_hash, b'digest')
         
     @patch('passgen.checksumIsValid')
     @patch('passgen.isMasterpassworddigestfilePresent')
     def test_read_masterpassworddigest_fail_nofile(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = False
         mock_checksumIsValid.return_value = False
-        mocked_open = mock_open(read_data=b'digestCHECKSUM')
+        mocked_open = mock_open(read_data=b'digestCSUM')
         with patch('passgen.open', mocked_open, create=True):
             with self.assertRaises(passgen.MasterPasswordDigestException) as context:
                 _ = passgen.read_masterpassworddigest()
@@ -43,7 +44,7 @@ class Functions(TestCase):
     def test_read_masterpassworddigest_fail_io(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = True
         mock_checksumIsValid.return_value = False
-        mocked_open = mock_open(read_data=b'digestCHECKSUM')
+        mocked_open = mock_open(read_data=b'digestCSUM')
         mocked_open.side_effect = IOError("File protected")
         with patch('passgen.open', mocked_open, create=True):
             with self.assertRaises(passgen.MasterPasswordDigestException) as context:
@@ -55,14 +56,15 @@ class Functions(TestCase):
     def test_read_masterpassworddigest_fail_checksum(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = True
         mock_checksumIsValid.return_value = False
-        mocked_open = mock_open(read_data=b'digestCHECKSUM')
+        mocked_open = mock_open(read_data=b'digestCXUM')
         with patch('passgen.open', mocked_open, create=True):
             with self.assertRaises(passgen.MasterPasswordDigestException) as context:
                 _ = passgen.read_masterpassworddigest()   
         self.assertEqual(str(context.exception), "Checksum error") 
 
     @patch('passgen.Argon2id')
-    def test_intestinize(self, mock_Argon2id):
+    @patch('passgen.sha3')
+    def test_intestinize(self, mock_sha3, mock_Argon2id):
         class MockArgon2id:
             def hash(self, password):
                 return 'garbagegarbage$digestDIGESTdigestDIGESTdigestDIGESTdigest'
@@ -73,7 +75,8 @@ class Functions(TestCase):
         self.assertEqual(digest, 'digestDIGESTdigestDIGESTdigest')
         
     @patch('passgen.Argon2id')
-    def test_intestinize_nosign(self, mock_Argon2id):
+    @patch('passgen.sha3')
+    def test_intestinize_nosign(self, mock_sha3, mock_Argon2id):
         class MockArgon2id:
             def hash(self, password):
                 return 'digestDIGESTdigestDIGESTdigestDIGESTdigest'
@@ -92,42 +95,96 @@ class Functions(TestCase):
         self.assertEqual(uppercase, "uppercase")
         self.assertEqual(digit, "digit")
         self.assertEqual(symbol, "symbol")
-        
+
     def test_ensure_digit(self):
         characterType = "digit"
         password = "Ab*JFDSDFDhg-?KL"
-        offset = 50
         i = 2
-        password = passgen.ensure(characterType, password, offset, i)
-        self.assertEqual(password, "Ab5JFDSDFDhg-?KL")
+        password = passgen.ensure(characterType, password, i)
+        self.assertEqual(password, "Ab0JFDSDFDhg-?KL")
         
     def test_ensure_lowercase(self):
         characterType = "lowercase"
         password = "A0*JFDSDFD68-?KL"
-        offset = 50
         i = 2
-        password = passgen.ensure(characterType, password, offset, i)
-        self.assertEqual(password, "A0sJFDSDFD68-?KL")
+        password = passgen.ensure(characterType, password, i)
+        self.assertEqual(password, "A0aJFDSDFD68-?KL")
         
     def test_ensure_uppercase(self):
         characterType = "uppercase"
         password = "0b*786fsh9hg-?-8"
-        offset = 50
         i = 2
-        password = passgen.ensure(characterType, password, offset, i)
-        self.assertEqual(password, "0bA786fsh9hg-?-8")
-        
+        password = passgen.ensure(characterType, password, i)
+        self.assertEqual(password, "0bF786fsh9hg-?-8")
+
     def test_ensure_symbol(self):
         characterType = "symbol"
         password = "0bA786fsh9hgBCD8"
-        offset = 50
         i = 2
-        password = passgen.ensure(characterType, password, offset, i)
-        self.assertEqual(password, "0b&786fsh9hgBCD8")
+        password = passgen.ensure(characterType, password, i)
+        self.assertEqual(password, "0b>786fsh9hgBCD8")
         
-    def test_ensure_characters(self): # test more
-        #password = "password"
-        pass
+    """
+    def test_ensure_characters_rangeInput(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        ITER = 1000
+        for i in range(ITER):
+            print(i)
+            password = ''.join(choice(ascii_lowercase) for i in range(10))
+            _ = passgen.ensure_characters(password)
+    """
     
-    def test_passgen(self):
-        pass
+    def test_ensure_characters_minlen(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "abcd"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, 'Bb{1')
+        
+    def test_ensure_characters_lowercase(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "password"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, 'pass0|Bd')
+             
+    def test_ensure_characters_uppercase(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "PASSWORD"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, 'P1!SWaRD')
+             
+    def test_ensure_characters_digit(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "434239043"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, 'B3|23904b')
+             
+    def test_ensure_characters_symbol(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "*$£()*$&*%)*/"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, '*$2b)F$&*%)*/')
+        
+    def test_ensure_characters_fine(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "aaaAAA*0"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, 'aaaAAA*0')
+        
+    def test_ensure_characters_symbolmissing(self):
+        # This relies on test_ensure as it is a relatively simple deterministic function        
+        password = "aaaAAA06"
+        password = passgen.ensure_characters(password)
+        self.assertEqual(password, 'aaaAA>06')
+        
+    @patch('passgen.ensure_characters')
+    @patch('passgen.intestinize')
+    @patch('passgen.read_masterpassworddigest')
+    def test_passgen(self, mock_read_masterpassworddigest, mock_intestinize, mock_ensure_characters):
+        mock_read_masterpassworddigest.return_value = b'digest'
+        mock_intestinize.return_value.return_value = "digestDIGESTED"
+        mock_ensure_characters.return_value = "digestDIGESTED1*"
+        website_name = "test"
+        password = passgen.passgen(website_name)
+        self.assertEqual(password, "digestDIGESTED1*")
+        
+        

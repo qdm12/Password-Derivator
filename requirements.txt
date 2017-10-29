@@ -3,7 +3,11 @@
 pysha3
 mock
 
+# Core
 argon2_cffi
 kivy
 kivy.deps.sdl2
 kivy.deps.glew
+
+# Tests
+nose
