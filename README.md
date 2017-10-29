@@ -1,6 +1,9 @@
 # Password-Derivator
 
 ## Installation
+
+**Make sure you use Python 3.6.x or Python 2.7.x**  
+
 1. Install Python packages
 
    ```shell

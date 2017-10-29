@@ -32,6 +32,7 @@ class WordFound(object):
         return "'" + self.word + "' (Start:"+str(self.start)+", End:"+str(self.end)+")"
     
 def evaluatePasswordDictionary(password):
+    password = str(password) # For python 2.7
     with open('english.txt', 'r') as f:
         raw_data = f.read()
     data = raw_data.split('\n')

@@ -1,5 +1,8 @@
 import unittest
-from unittest.mock import mock_open, patch
+try: 
+    from unittest.mock import patch, mock_open # Python 3
+except ImportError:    
+    from mock import patch, mock_open # Python 2.7
 import robustness        
 class WordFound(unittest.TestCase):
     def setUp(self):

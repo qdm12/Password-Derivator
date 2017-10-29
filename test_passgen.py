@@ -1,5 +1,9 @@
 from unittest import TestCase
-from unittest.mock import patch, mock_open
+
+try: 
+    from unittest.mock import patch, mock_open # Python 3
+except ImportError:    
+    from mock import patch, mock_open # Python 2.7
 import passgen
 
 class MasterPasswordDigestException(TestCase):
@@ -121,7 +125,8 @@ class Functions(TestCase):
         password = passgen.ensure(characterType, password, offset, i)
         self.assertEqual(password, "0b&786fsh9hgBCD8")
         
-    def test_ensure_characters(self):
+    def test_ensure_characters(self): # test more
+        #password = "password"
         pass
     
     def test_passgen(self):

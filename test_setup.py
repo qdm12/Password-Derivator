@@ -1,5 +1,8 @@
 from unittest import TestCase
-from unittest.mock import patch, mock_open
+try: 
+    from unittest.mock import patch, mock_open # Python 3
+except ImportError:    
+    from mock import patch, mock_open # Python 2.7
 import setup
      
 class Functions(TestCase):
@@ -87,7 +90,7 @@ class Functions(TestCase):
         self.assertEqual(valid, False, "This checksum is not a valid SHA3-256 checksum")
         
     def test_checksumIsValid_notBytes(self):
-        valid = setup.checksumIsValid('digest\xe6z\x0c\xc6')
+        valid = setup.checksumIsValid('digest')
         self.assertEqual(valid, False, "This checksum is not of bytes type")
 
     @patch('setup.intestinize')

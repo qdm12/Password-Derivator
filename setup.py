@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-from hashlib import sha3_256
+try: 
+    from hashlib import sha3_256 # Python 3
+except ImportError:    
+    from sha3 import sha3_256 # Python 2.7
 from getpass import getpass
 from myargon import Argon2id
 from robustness import evaluatePassword
