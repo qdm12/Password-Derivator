@@ -1,7 +1,7 @@
 # Password-Derivator
 
 [![Coverage Status](https://coveralls.io/repos/github/qdm12/Password-Derivator/badge.svg?branch=master)](https://coveralls.io/github/qdm12/Password-Derivator?branch=master)
-
+[![Build Status](https://travis-ci.org/qdm12/Password-Derivator.svg?branch=master)](https://travis-ci.org/qdm12/Password-Derivator)
 
 ## Installation
 
@@ -10,7 +10,7 @@
 1. Install Python packages
 
    ```shell
-   pip install -r requirements.txt
+   python install.py
    ```
    
 2. For the user interface:
