@@ -1,6 +1,8 @@
 MasterPasswordDigest.txt
 .project
 .pydevproject
+.coverage
+.settings
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -24,6 +24,7 @@
    ```
 
 ## To do
+- Finish unit tests, with coveralls and Travis CI
 - Finish User interface with [Kivy](https://kivy.org)
     - Colors and better experience
     - Add settings, tools
@@ -38,7 +39,6 @@
         - HTTP sniffing
         - HTTPS and NSA backdoors at certificate authorities issuing your keys
     - Loss
-- Finish unit tests, with coveralls and Travis CI
 - Docstring with Sphinx
 - Optional PIN code to derive password (PIN could encrypt file -> Have a check value !!!)
 - Make password robustness check better
