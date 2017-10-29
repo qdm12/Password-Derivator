@@ -2,6 +2,7 @@ MasterPasswordDigest.txt
 .project
 .pydevproject
 .coverage
+coverage
 .settings
 
 # Byte-compiled / optimized / DLL files

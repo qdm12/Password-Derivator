@@ -6,7 +6,10 @@ python:
 install: "python install.py"
 
 script:
-  - nosetests --verbose --rednose --with-coverage --cover-erase --cover-package=server
+  - nosetests --verbose --rednose --with-coverage --cover-erase --cover-package=derivatex
 
 after_success:
   - coveralls
+
+notifications:
+  email: false

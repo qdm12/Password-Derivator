@@ -25,25 +25,36 @@
    python setup.py
    python passgen.py
    ```
+   
+## Why ?
+- Not remembering passwords
+- Resistant to loss
+- Resistant to bruteforce attacks
+    - Botnets
+    - Cloud computing and GPUs
+    - ASICs miners
+- Resistant to rainbow attacks
+- Hacking attacks
+    - Website hacked
+    - HTTP sniffing
+    - HTTPS and NSA backdoors at certificate authorities issuing your keys
+- Your master password can't be found at all
+- Your passwords are vulnerable if:
+    1. The attacker knows you are using this program
+    2. The attacker has your
+        - Your birthdate AND your master password, or
+        - Your master password digest file
+- If you carry this program on a USB drive, be careful not to lose it !!
 
 ## To do
-- Finish unit tests, with coveralls and Travis CI
 - Finish User interface with [Kivy](https://kivy.org)
     - Colors and better experience
     - Add settings, tools
 - Make it USB portable
 - Bring support to Android and iOS with [Kivy](https://kivy.org)
-- Explain how secured Derivatex is:
-    - Bruteforce attacks
-    - Rainbow attacks
-    - Botnet/Cloud computing/ASIC based attacks
-    - Hacking attacks
-        - Website hacked
-        - HTTP sniffing
-        - HTTPS and NSA backdoors at certificate authorities issuing your keys
-    - Loss
 - Docstring with Sphinx
-- Optional PIN code to derive password (PIN could encrypt file -> Have a check value !!!)
+- Optional PIN code to have a few days of delay to change all passwords
+- See the list of websites you generated a password for perhaps
 - Make password robustness check better
     - Add other dictionaries
     - Check for birthdates in password
@@ -61,6 +72,7 @@
 - Robustness of password is calculated and transparent
 - basic UI
 - Uses SHA3
+- Unit tests with coveralls and Travis CI
 
 ## To do eventually
 - SSH keys generation from file
