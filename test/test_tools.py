@@ -1,11 +1,12 @@
+#!/usr/bin/env python
+
 from unittest import TestCase
 try: 
     from unittest.mock import patch # Python 3
 except ImportError:    
     from mock import patch # Python 2.7
     
-import tools
-
+from derivatex import tools
 
 class Functions(TestCase):
     def setUp(self):
@@ -14,13 +15,13 @@ class Functions(TestCase):
     def tearDown(self):
         pass
     
-    @patch('tools.isfile')
+    @patch('derivatex.tools.isfile')
     def test_isMasterpassworddigestfilePresent_True(self, mock_isfile):
         mock_isfile.return_value = True
         result = tools.isMasterpassworddigestfilePresent()
         self.assertTrue(result)
         
-    @patch('tools.isfile')
+    @patch('derivatex.tools.isfile')
     def test_isMasterpassworddigestfilePresent_False(self, mock_isfile):
         mock_isfile.return_value = False
         result = tools.isMasterpassworddigestfilePresent()

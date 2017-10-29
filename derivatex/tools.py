@@ -1,4 +1,3 @@
-from sys import version_info
 from os.path import isfile
 try: 
     from hashlib import sha3_256 # Python 3

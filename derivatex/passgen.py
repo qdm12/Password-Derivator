@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-from tools import sha3
-from myargon import Argon2id
-from setup import checksumIsValid
-from tools import isMasterpassworddigestfilePresent
+from derivatex.tools import sha3
+from derivatex.myargon import Argon2id
+from derivatex.initiate import checksumIsValid
+from derivatex.tools import isMasterpassworddigestfilePresent
 
 try:
     from builtins import input
 except ImportError:
-    from __builtins__ import raw_input as input
+    from __builtin__ import raw_input as input
 
 class MasterPasswordDigestException(Exception):
     pass

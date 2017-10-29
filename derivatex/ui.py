@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 from passgen import passgen, MasterPasswordDigestException, isMasterpassworddigestfilePresent
-from setup import setup, check_master_password, get_time_cost,\
+from initiate import setup, check_master_password, get_time_cost,\
     get_time_per_time_cost
 
 from kivy.app import App  

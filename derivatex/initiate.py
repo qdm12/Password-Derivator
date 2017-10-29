@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
-from getpass import getpass
-from myargon import Argon2id
-from robustness import evaluatePassword
-from tools import isMasterpassworddigestfilePresent, sha3
 from time import time
 
+from derivatex.myargon import Argon2id
+from derivatex.robustness import evaluatePassword
+from derivatex.tools import isMasterpassworddigestfilePresent, sha3
+
+from getpass import getpass
 try:
     from builtins import input
 except ImportError:
-    from __builtins__ import raw_input as input
+    from __builtin__ import raw_input as input
 
 def get_time_per_time_cost(iterations=8):
     start = time()
@@ -34,9 +35,9 @@ def check_master_password(master_password1, master_password2):
 def get_time_cost(birthdate):
     birthdate = birthdate.split('/')
     offset = int(birthdate[0]) + int(birthdate[1]) + int(birthdate[2])
-    time_cost = 0
+    time_cost = 1
     while time_cost not in range(80, 120):
-        time_cost = (time_cost + offset) % 120
+        time_cost = (time_cost * offset + 1) % 120
     return time_cost
 
 def intestinize(password, birthdate):
@@ -51,9 +52,11 @@ def intestinize(password, birthdate):
     return digest
 
 def checksumIsValid(digest):
-    if type(digest) is not bytes:
-        return False
-    return digest[-4:] == sha3(digest[:-4])[-4:]
+    try:
+        checksum = sha3(digest[:-4])[-4:]
+    except TypeError:
+        return False # digest is not bytes
+    return digest[-4:] == checksum
 
 def setup(master_password, birthdate):
     success = True

@@ -11,3 +11,6 @@ kivy.deps.glew
 
 # Tests
 nose
+rednose
+coverage
+coveralls

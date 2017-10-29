@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 from unittest import TestCase
 try: 
     from unittest.mock import patch, mock_open # Python 3
 except ImportError:    
     from mock import patch, mock_open # Python 2.7
 
-import passgen
+from derivatex import passgen
 
 
 class MasterPasswordDigestException(TestCase):
@@ -18,52 +20,52 @@ class Functions(TestCase):
     def tearDown(self):
         pass
     
-    @patch('passgen.checksumIsValid')
-    @patch('passgen.isMasterpassworddigestfilePresent')
+    @patch('derivatex.passgen.checksumIsValid')
+    @patch('derivatex.passgen.isMasterpassworddigestfilePresent')
     def test_read_masterpassworddigest_success(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = True
         mock_checksumIsValid.return_value = True
         mocked_open = mock_open(read_data=b'digestCSUM')
-        with patch('passgen.open', mocked_open, create=True):
+        with patch('derivatex.passgen.open', mocked_open, create=True):
             password_hash = passgen.read_masterpassworddigest()
         self.assertEqual(password_hash, b'digest')
         
-    @patch('passgen.checksumIsValid')
-    @patch('passgen.isMasterpassworddigestfilePresent')
+    @patch('derivatex.passgen.checksumIsValid')
+    @patch('derivatex.passgen.isMasterpassworddigestfilePresent')
     def test_read_masterpassworddigest_fail_nofile(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = False
         mock_checksumIsValid.return_value = False
         mocked_open = mock_open(read_data=b'digestCSUM')
-        with patch('passgen.open', mocked_open, create=True):
+        with patch('derivatex.passgen.open', mocked_open, create=True):
             with self.assertRaises(passgen.MasterPasswordDigestException) as context:
                 _ = passgen.read_masterpassworddigest()
         self.assertEqual(str(context.exception), "File not found")
                 
-    @patch('passgen.checksumIsValid')
-    @patch('passgen.isMasterpassworddigestfilePresent')
+    @patch('derivatex.passgen.checksumIsValid')
+    @patch('derivatex.passgen.isMasterpassworddigestfilePresent')
     def test_read_masterpassworddigest_fail_io(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = True
         mock_checksumIsValid.return_value = False
         mocked_open = mock_open(read_data=b'digestCSUM')
         mocked_open.side_effect = IOError("File protected")
-        with patch('passgen.open', mocked_open, create=True):
+        with patch('derivatex.passgen.open', mocked_open, create=True):
             with self.assertRaises(passgen.MasterPasswordDigestException) as context:
                 _ = passgen.read_masterpassworddigest()
         self.assertEqual(str(context.exception), "File protected")
         
-    @patch('passgen.checksumIsValid')
-    @patch('passgen.isMasterpassworddigestfilePresent')
+    @patch('derivatex.passgen.checksumIsValid')
+    @patch('derivatex.passgen.isMasterpassworddigestfilePresent')
     def test_read_masterpassworddigest_fail_checksum(self, mock_isMasterpassworddigestfilePresent, mock_checksumIsValid):
         mock_isMasterpassworddigestfilePresent.return_value = True
         mock_checksumIsValid.return_value = False
         mocked_open = mock_open(read_data=b'digestCXUM')
-        with patch('passgen.open', mocked_open, create=True):
+        with patch('derivatex.passgen.open', mocked_open, create=True):
             with self.assertRaises(passgen.MasterPasswordDigestException) as context:
                 _ = passgen.read_masterpassworddigest()   
         self.assertEqual(str(context.exception), "Checksum error") 
 
-    @patch('passgen.Argon2id')
-    @patch('passgen.sha3')
+    @patch('derivatex.passgen.Argon2id')
+    @patch('derivatex.passgen.sha3')
     def test_intestinize(self, mock_sha3, mock_Argon2id):
         class MockArgon2id:
             def hash(self, password):
@@ -74,8 +76,8 @@ class Functions(TestCase):
         digest = passgen.intestinize(masterpassworddigest, website_name)
         self.assertEqual(digest, 'digestDIGESTdigestDIGESTdigest')
         
-    @patch('passgen.Argon2id')
-    @patch('passgen.sha3')
+    @patch('derivatex.passgen.Argon2id')
+    @patch('derivatex.passgen.sha3')
     def test_intestinize_nosign(self, mock_sha3, mock_Argon2id):
         class MockArgon2id:
             def hash(self, password):
@@ -160,7 +162,7 @@ class Functions(TestCase):
              
     def test_ensure_characters_symbol(self):
         # This relies on test_ensure as it is a relatively simple deterministic function        
-        password = "*$£()*$&*%)*/"
+        password = '*$£()*$&*%)*/'
         password = passgen.ensure_characters(password)
         self.assertEqual(password, '*$2b)F$&*%)*/')
         
@@ -176,9 +178,9 @@ class Functions(TestCase):
         password = passgen.ensure_characters(password)
         self.assertEqual(password, 'aaaAA>06')
         
-    @patch('passgen.ensure_characters')
-    @patch('passgen.intestinize')
-    @patch('passgen.read_masterpassworddigest')
+    @patch('derivatex.passgen.ensure_characters')
+    @patch('derivatex.passgen.intestinize')
+    @patch('derivatex.passgen.read_masterpassworddigest')
     def test_passgen(self, mock_read_masterpassworddigest, mock_intestinize, mock_ensure_characters):
         mock_read_masterpassworddigest.return_value = b'digest'
         mock_intestinize.return_value.return_value = "digestDIGESTED"

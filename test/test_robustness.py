@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+
 import unittest
 try: 
     from unittest.mock import patch, mock_open # Python 3
 except ImportError:    
     from mock import patch, mock_open # Python 2.7
-import robustness        
+
+from derivatex import robustness        
 class WordFound(unittest.TestCase):
     def setUp(self):
         pass
@@ -162,7 +165,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_empty(self):
         password = ""
         mocked_open = mock_open(read_data='abc \n def \n hij \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "", "Word was not removed from password")
         self.assertEqual(possible_combinations, 0, "Number of combinations is wrong")
@@ -170,7 +173,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_lowercase(self):
         password = "z2defvbhabchd1l**c"
         mocked_open = mock_open(read_data='abc \n def \n hij \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "z2vbhhd1l**c", "Word was not removed from password")
         self.assertEqual(possible_combinations, pow(5, 2), "Number of combinations is wrong")
@@ -178,7 +181,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_uppercase(self):
         password = "z2DEFvbhABChd1l**c"
         mocked_open = mock_open(read_data='abc \n def \n hij \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "z2vbhhd1l**c", "Word was not removed from password")
         self.assertEqual(possible_combinations, pow(10, 2), "Number of combinations is wrong")
@@ -186,7 +189,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_mixedcase(self):
         password = "z2DeFvbhABChd1l**c"
         mocked_open = mock_open(read_data='abc \n def \n hij \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "z2vbhhd1l**c", "Word was not removed from password")
         self.assertEqual(possible_combinations, pow(pow(2,3) * 5, 2), "Number of combinations is wrong")
@@ -195,7 +198,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_overlap1(self):
         password = "abcdefghiii"
         mocked_open = mock_open(read_data='abcdefghi \n def \n hij \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "ii", "Word was not removed from password")
         self.assertEqual(possible_combinations, pow(5, 1), "Number of combinations is wrong")
@@ -203,7 +206,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_overlap2(self):
         password = "abcdefghiii"
         mocked_open = mock_open(read_data='abc \n def \n abcdefghi \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "ii", "Word was not removed from password")
         self.assertEqual(possible_combinations, pow(5, 1), "Number of combinations is wrong")
@@ -211,7 +214,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_badword(self):
         password = "abcddd"
         mocked_open = mock_open(read_data='abc \n def \n abcdefghi \n klm \n opq \n')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "ddd", "Word was not removed from password")
         self.assertEqual(possible_combinations, pow(5,1), "Number of combinations is wrong")
@@ -219,7 +222,7 @@ class Functions(unittest.TestCase):
     def test_evaluatePasswordDictionary_nowords(self):
         password = "xxxxxxx"
         mocked_open = mock_open(read_data='abc \n def \n abcdefghi \n klm \n opq \n')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             password_without_words, possible_combinations = robustness.evaluatePasswordDictionary(password)
         self.assertEqual(password_without_words, "xxxxxxx", "Word was not removed from password")
         self.assertEqual(possible_combinations, 0, "Number of combinations is wrong")
@@ -257,15 +260,15 @@ class Functions(unittest.TestCase):
     def test_evaluatePassword_real(self):
         password = "defaA*00000" # 5^1 * (26+26+28+10)^8 = 21523360500000000
         mocked_open = mock_open(read_data='abc \n def \n abcdefghi \n klm \n opq')
-        with patch('robustness.open', mocked_open, create=True):
+        with patch('derivatex.robustness.open', mocked_open, create=True):
             security_bits, security_digits, safe, safer = robustness.evaluatePassword(password)
         self.assertEqual(security_bits, 54.26, "Security bits is wrong")
         self.assertEqual(security_digits, 16, "Security digits is wrong")
         self.assertTrue(safe, "This has 54.26 bits of security and should be safe")
         self.assertTrue(safer, "This has 54.26 bits of security and should be safer")
         
-    @patch('robustness.evaluatePasswordCharacters')
-    @patch('robustness.evaluatePasswordDictionary')
+    @patch('derivatex.robustness.evaluatePasswordCharacters')
+    @patch('derivatex.robustness.evaluatePasswordDictionary')
     def test_evaluatePassword_success(self, mock_evaluatePasswordDictionary, mock_evaluatePasswordCharacters):
         password = "test"
         mock_evaluatePasswordDictionary.return_value = [password, 100000000]
@@ -276,8 +279,8 @@ class Functions(unittest.TestCase):
         self.assertTrue(safe, "xxxxx")
         self.assertTrue(safer, "xxxxx")
  
-    @patch('robustness.evaluatePasswordCharacters')
-    @patch('robustness.evaluatePasswordDictionary')
+    @patch('derivatex.robustness.evaluatePasswordCharacters')
+    @patch('derivatex.robustness.evaluatePasswordDictionary')
     def test_evaluatePassword_fail(self, mock_evaluatePasswordDictionary, mock_evaluatePasswordCharacters):
         password = "test"
         mock_evaluatePasswordDictionary.return_value = [password, 10]
@@ -288,8 +291,8 @@ class Functions(unittest.TestCase):
         self.assertFalse(safe, "This should not be safe")
         self.assertFalse(safer, "This should not be safe or safer")
          
-    @patch('robustness.evaluatePasswordCharacters')
-    @patch('robustness.evaluatePasswordDictionary')
+    @patch('derivatex.robustness.evaluatePasswordCharacters')
+    @patch('derivatex.robustness.evaluatePasswordDictionary')
     def test_evaluatePassword_fail_empty(self, mock_evaluatePasswordDictionary, mock_evaluatePasswordCharacters):
         password = ""
         mock_evaluatePasswordDictionary.return_value = [password, 0]
