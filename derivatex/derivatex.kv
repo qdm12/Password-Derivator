@@ -1,3 +1,5 @@
+#:import Clipboard kivy.core.clipboard.Clipboard
+
 <PassGenScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -67,14 +69,21 @@
                 on_press: root.on_submit_website(website_name.text)
         BoxLayout:
             orientation: "vertical"
-            padding: 0.1*root.width, 0.1*root.height
+            padding: 0.05*root.width, 0.1*root.height
             Label:
                 id: new_password
                 size: 0.8*root.width, 0.07*root.height
                 size_hint: None, None
                 text: "Your new password"
                 font_size: 16
-        BoxLayout:
+            Button:
+                id: copy_new_password
+                size: 0.2*root.width, 0.07*root.height
+                size_hint: None, None
+                text: "Copy"
+                on_press:
+                    Clipboard.copy('new_password.text')
+                    color: 'green'
                 
                 
                 
