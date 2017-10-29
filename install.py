@@ -4,7 +4,7 @@ from os import environ
 
 python2 = ["pysha3", "mock"]
 core = ["argon2_cffi"]
-ui = ["kivy", "kivy.deps.sdl2", "kivy.deps.glew"]
+ui = ["kivy", "kivy.deps.sdl2", "kivy.deps.glew", "pyperclip"]
 tests = ["nose", "rednose", "coverage", "coveralls"]
 
 def install(packages):

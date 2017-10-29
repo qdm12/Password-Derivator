@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-from passgen import passgen, MasterPasswordDigestException, isMasterpassworddigestfilePresent
-from initiate import setup, check_master_password, get_time_cost,\
+from derivatex.passgen import passgen, MasterPasswordDigestException, isMasterpassworddigestfilePresent
+from derivatex.initiate import setup, check_master_password, get_time_cost,\
     get_time_per_time_cost
+from pyperclip import copy
 
 from kivy.app import App  
 from kivy.uix.popup import Popup  
@@ -83,6 +84,10 @@ class PassGenScreen(Screen):#BoxLayout
     def _close_go_setup(self, origin=None):
         self._close_popup()
         self.manager.current='Setup'
+        
+    def on_clipboard_copy(self, content):
+        copy(content)
+        
 
 class SetupScreen(Screen):
     def __init__(self, *args, **kwargs):

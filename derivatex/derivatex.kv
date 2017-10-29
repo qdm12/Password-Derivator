@@ -68,22 +68,24 @@
                 font_size: 16
                 on_press: root.on_submit_website(website_name.text)
         BoxLayout:
-            orientation: "vertical"
-            padding: 0.05*root.width, 0.1*root.height
+            orientation: "horizontal"
+            padding: 0.07*root.width, 0.1*root.height
+            spacing: 0
             Label:
                 id: new_password
-                size: 0.8*root.width, 0.07*root.height
+                size: 0.73*root.width, 0.07*root.height
                 size_hint: None, None
                 text: "Your new password"
-                font_size: 16
+                font_size: 15
             Button:
                 id: copy_new_password
-                size: 0.2*root.width, 0.07*root.height
+                size: 0.13*root.width, 0.07*root.height
                 size_hint: None, None
                 text: "Copy"
-                on_press:
-                    Clipboard.copy('new_password.text')
-                    color: 'green'
+                #self.background_color: (0, 0, 0, 1)
+                on_press: 
+                    root.on_clipboard_copy(new_password.text)
+                    #self.background_color: (0, 1, 1, 1)
                 
                 
                 
