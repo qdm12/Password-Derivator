@@ -1,5 +1,8 @@
 # Password-Derivator
 
+[![Coverage Status](https://coveralls.io/repos/github/qdm12/Password-Derivator/badge.svg?branch=master)](https://coveralls.io/github/qdm12/Password-Derivator?branch=master)
+
+
 ## Installation
 
 **Make sure you use Python 3.6.x or Python 2.7.x**  
