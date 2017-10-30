@@ -25,7 +25,7 @@
    python setup.py
    python passgen.py
    ```
-   
+
 ## Why ?
 - Not remembering passwords
 - Resistant to loss
@@ -47,14 +47,16 @@
 - If you carry this program on a USB drive, be careful not to lose it !!
 
 ## To do
+- Build it as executable for
+    - [Windows](https://kivy.org/docs/guide/packaging-windows.html) and make it USB portable
+    - [Android](https://kivy.org/docs/guide/packaging-android.html)
+    - [iOS](https://kivy.org/docs/guide/packaging-ios.html)
+    - [Mac](https://kivy.org/docs/guide/packaging-osx.html)
+    - [Ubuntu](http://bitstream.io/packaging-and-distributing-a-kivy-application-on-linux.html)
+- Docstring with Sphinx
 - Finish User interface with [Kivy](https://kivy.org)
     - Colors and better experience
     - Add settings, tools
-- Make it USB portable
-- Bring support to Android and iOS with [Kivy](https://kivy.org)
-- Docstring with Sphinx
-- Optional PIN code to have a few days of delay to change all passwords
-- See the list of websites you generated a password for perhaps
 - Make password robustness check better
     - Add other dictionaries
     - Check for birthdates in password
@@ -76,7 +78,9 @@
 
 ## To do eventually
 - SSH keys generation from file
+- See the list of websites you generated a password for
 - AES encryption of files/directories
+- Optional PIN code to have a few days of delay to change all passwords and against stupid people
 - Shamir Secret sharing 
 - Show robustness of password: # of words, # of letters, # of digits etc.
 
