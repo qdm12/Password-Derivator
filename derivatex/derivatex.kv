@@ -1,6 +1,10 @@
-#:import Clipboard kivy.core.clipboard.Clipboard
-
-<PassGenScreen>:
+<PassGenScreen@Screen>:
+    canvas.before:
+        Color:
+            rgba: 0.0625, 0.0625, 0.15625, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
     BoxLayout:
         orientation: "vertical"
         spacing: 0.1*root.height
@@ -13,7 +17,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "PassGen"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'PassGen'
@@ -22,7 +26,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Setup"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Setup'
@@ -31,7 +35,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Settings"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Settings'
@@ -40,7 +44,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Tools"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Tools'
@@ -48,12 +52,12 @@
             orientation: "vertical"
             padding: 0.1*root.width, 0
             TextInput:
-                padding: self.width/16, self.height/4
+                padding: self.width/20, self.height*0.15, self.width/20, 0
                 id: website_name
-                size: 0.8*root.width, 0.08*root.height
+                size: 0.8*root.width, 0.14*root.height
                 size_hint: None, None
                 hint_text: "Website or company name"
-                font_size: 16
+                font_size: 0.06*self.width
                 multiline: False
                 text_validate_unfocus: False
                 on_text_validate: root.on_submit_website(website_name.text)
@@ -65,31 +69,40 @@
                 size: 0.4*root.width, 0.1*root.height
                 size_hint: None, None
                 text: "Generate password"
-                font_size: 16
+                font_size: 0.1*self.width
+                background_normal: ''
+                background_color: (0.25, 0.73, 0.95, 0.7)
                 on_press: root.on_submit_website(website_name.text)
         BoxLayout:
             orientation: "horizontal"
             padding: 0.07*root.width, 0.1*root.height
-            spacing: 0
+            spacing: 0.01*root.width
             Label:
                 id: new_password
-                size: 0.73*root.width, 0.07*root.height
+                size: 0.73*root.width, 0.1*root.height
                 size_hint: None, None
                 text: "Your new password"
-                font_size: 15
+                font_size: 0.05*self.width
             Button:
                 id: copy_new_password
-                size: 0.13*root.width, 0.07*root.height
+                size: 0.13*root.width, 0.1*root.height
                 size_hint: None, None
                 text: "Copy"
-                #self.background_color: (0, 0, 0, 1)
+                font_size: 0.3*self.width
+                background_normal: ''
+                background_color: (0.13, 0.31, 0.44, 0.7)
                 on_press: 
                     root.on_clipboard_copy(new_password.text)
-                    #self.background_color: (0, 1, 1, 1)
                 
                 
                 
-<SetupScreen>:
+<SetupScreen@Screen>:
+    canvas.before:
+        Color:
+            rgba: 0.15, 0.1, 0.2, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
     BoxLayout:
         orientation: "vertical"
         spacing: 0.1*root.height
@@ -102,7 +115,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "PassGen"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'PassGen'
@@ -111,7 +124,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Setup"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Setup'
@@ -120,7 +133,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Settings"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Settings'
@@ -129,7 +142,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Tools"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Tools'
@@ -139,21 +152,21 @@
             padding: 0.1*root.width, 0
             TextInput:
                 id: master_password1
-                size: 0.8*root.width, 0.06*root.height
+                size: 0.8*root.width, 0.12*root.height
                 size_hint: None, None
                 hint_text: "Enter your master password"
-                font_size: 16
-                padding: self.width / 16, self.height / 4 
+                font_size: 0.05*self.width
+                padding: self.width/20, self.height*0.15, self.width/20, 0 
                 allow_copy: False
                 write_tab: False
                 password: True
             TextInput:
                 id: master_password2
-                size: 0.8*root.width, 0.06*root.height
+                size: 0.8*root.width, 0.12*root.height
                 size_hint: None, None
                 hint_text: "Enter your master password again"
-                font_size: 16
-                padding: self.width / 16, self.height / 4
+                font_size: 0.05*self.width
+                padding: self.width/20, self.height*0.15, self.width/20, 0
                 allow_copy: False
                 write_tab: False
                 password: True
@@ -161,40 +174,44 @@
             orientation: "vertical"
             Label:
                 text: "Enter your birthdate below"
+                font_size: 0.05*self.width
             BoxLayout:
                 orientation: "horizontal"
                 spacing: root.width * 0.1
-                padding: 0.1*root.width
+                padding: 0.1*root.width, 0
                 Spinner:
                     id: day
                     text: "Day"
+                    font_size: 0.2*self.width
                     values: [str(i) for i in range(31, 0, -1)]
-                    size: 0.2*root.width, 0.07*root.height
+                    size: 0.2*root.width, 0.09*root.height
                     size_hint: None, None
                 Spinner:
                     id: month
                     text: "Month"
+                    font_size: 0.2*self.width
                     values: [str(i) for i in range(12, 0, -1)]
-                    size: 0.2*root.width, 0.07*root.height
+                    size: 0.2*root.width, 0.09*root.height
                     size_hint: None, None
                 Spinner:
                     id: year
                     text: "Year"
+                    font_size: 0.2*self.width
                     values: [str(i) for i in range(2008, 1939, -1)]
-                    size: 0.2*root.width, 0.07*root.height
+                    size: 0.2*root.width, 0.09*root.height
                     size_hint: None, None
         BoxLayout:
             padding: 0.25*root.width, 0.07*root.height
             Button:
                 size: 0.5*root.width, 0.1*root.height
                 size_hint: None, None
-                font_size: 16
+                font_size: 0.07*self.width
                 text: "Save Secured Digest"
                 on_press: root.on_submit_credentials(master_password1.text, master_password2.text, day.text, month.text, year.text)      
 
         
         
-<SettingsScreen>:
+<SettingsScreen@Screen>:
     BoxLayout:
         orientation: "vertical"
         padding: 0, 0
@@ -210,7 +227,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "PassGen"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'PassGen'
@@ -219,7 +236,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Setup"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Setup'
@@ -228,7 +245,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Settings"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Settings'
@@ -237,14 +254,14 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Tools"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Tools'
         BoxLayout:
 
 
-<ToolsScreen>:
+<ToolsScreen@Screen>:
     BoxLayout:
         orientation: "vertical"
         padding: 0, 0
@@ -260,7 +277,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "PassGen"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'PassGen'
@@ -269,7 +286,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Setup"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Setup'
@@ -278,7 +295,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Settings"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Settings'
@@ -287,7 +304,7 @@
                 size: 0.25*root.width, 0.08*root.height
                 size_hint: None, None
                 text: "Tools"
-                font_size: 20
+                font_size: 0.04*root.width
                 group: "navigation"
                 state: "normal"
                 on_press: root.manager.current = 'Tools'

@@ -88,6 +88,7 @@ class PassGenScreen(Screen):#BoxLayout
     def on_clipboard_copy(self, content):
         copy(content)
         
+        
 
 class SetupScreen(Screen):
     def __init__(self, *args, **kwargs):
