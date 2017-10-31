@@ -253,8 +253,12 @@ class DerivatexApp(App):
         # finds machine performance
         Thread(target=self.find_performance_argon).start()
         return sm
-
-if __name__ == "__main__":  
+    
+def launch():
     Config.set('graphics', 'width', '384')
     Config.set('graphics', 'height', '681')
     DerivatexApp().run()
+    
+if __name__ == "__main__":
+    launch()
+

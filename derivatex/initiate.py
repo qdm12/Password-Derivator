@@ -4,7 +4,8 @@ from time import time
 
 from derivatex.myargon import Argon2id
 from derivatex.robustness import evaluatePassword
-from derivatex.tools import isMasterpassworddigestfilePresent, sha3
+from derivatex.tools import isMasterpassworddigestfilePresent, sha3,\
+    working_path
 
 from getpass import getpass
 try:
@@ -65,7 +66,7 @@ def setup(master_password, birthdate):
     del master_password
     digest = intestinize(digest, birthdate)
     try:
-        with open('MasterPasswordDigest.txt','wb') as f:
+        with open(working_path + '\MasterPasswordDigest.txt','wb') as f:
             f.write(digest)
     except Exception as e:
         return not success, "File writing error (" + str(e) + ")"

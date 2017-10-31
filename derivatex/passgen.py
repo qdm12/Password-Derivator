@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from derivatex.tools import sha3
+from derivatex.tools import sha3, working_path
 from derivatex.myargon import Argon2id
 from derivatex.initiate import checksumIsValid
 from derivatex.tools import isMasterpassworddigestfilePresent
@@ -17,7 +17,7 @@ def read_masterpassworddigest():
     if not isMasterpassworddigestfilePresent():
         raise MasterPasswordDigestException("File not found")
     try:
-        with open('MasterPasswordDigest.txt','rb') as f:
+        with open(working_path + '\MasterPasswordDigest.txt','rb') as f:
             digest_and_checksum = f.read()
     except IOError as e:
         raise MasterPasswordDigestException(str(e))
