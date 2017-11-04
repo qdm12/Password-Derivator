@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-from derivatex.tools import sha3, working_path
-from derivatex.myargon import Argon2id
-from derivatex.initiate import checksumIsValid
-from derivatex.tools import isMasterpassworddigestfilePresent
-
+from os import sep
+from pyperclip import copy
 try:
     from builtins import input
 except ImportError:
     from __builtin__ import raw_input as input
+from derivatex.tools import sha3, working_path
+from derivatex.myargon import Argon2id
+from derivatex.initiate import checksumIsValid
+from derivatex.tools import isMasterpassworddigestfilePresent
 
 class MasterPasswordDigestException(Exception):
     pass
@@ -17,7 +18,7 @@ def read_masterpassworddigest():
     if not isMasterpassworddigestfilePresent():
         raise MasterPasswordDigestException("File not found")
     try:
-        with open(working_path + '\MasterPasswordDigest.txt','rb') as f:
+        with open(working_path + sep + 'MasterPasswordDigest.txt','rb') as f:
             digest_and_checksum = f.read()
     except IOError as e:
         raise MasterPasswordDigestException(str(e))
@@ -36,12 +37,12 @@ def intestinize(masterpassworddigest, website_name):
     # can't bruteforce password really so we set time_cost to 1
     salt = sha3(website_name)
     digest = Argon2id(salt=salt,
-                      hash_len=22, # for 31 characters
+                      hash_len=18, # for 24 characters
                       memory_cost=33554,
                       time_cost=1).hash(Input)
     del Input, masterpassworddigest, website_name
     digest = digest[digest.rfind('$')+1:]
-    return digest[:30]
+    return digest[:24] # makes sure it's only 24 characters
 
 def deterministic_random(string, multiplier):
     x = 0
@@ -102,4 +103,6 @@ def passgen(website_name):
 if __name__ == '__main__':
     website_name = input("Enter the website name: ")
     password = passgen(website_name)
-    print("=> Your password is: "+str(password))
+    print("=> Your password is: " + password)
+    copy(password)
+    print("Password already copied to your clipboard")

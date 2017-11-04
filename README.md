@@ -5,26 +5,64 @@
 
 ## Installation
 
-**Make sure you use Python 3.6.x or Python 2.7.x**  
+### Python
+**Make sure you use Python 3.6.x (32bit) or Python 2.7.x**
 
 1. Install Python packages
-
-   ```shell
-   python install.py
-   ```
+    ```shell
+    python install.py
+    ```
    
-2. For the user interface:
-
-   ```shell
-   python ui.py
-   ```
+2. Launch the user interface:
+    ```shell
+    python ui.py
+    ```
    
-3. For the Python script files:
+3. Launch the script files directly:
+    ```shell
+    python initiate.py
+    python passgen.py
+    ```
+    
+### User interface
+- Android app
+- iOS app
+- Mac OSX
+- Windows
+- *Nix or Ubuntu
 
-   ```shell
-   python setup.py
-   python passgen.py
-   ```
+### Command line
+**Make sure you use Python 3.6.x (32bit) or Python 2.7.x**
+
+1. Install Python packages
+    ```bash
+    python install.py
+    ```
+   
+2. Generate your Master Password Digest file ONCE with either:
+    - The UI
+        ```bash
+        python ui.py
+        ```
+        
+    - The script *initiate.py*
+        ```shell
+        python initiate.py
+        ```
+        
+3. Create an alias for your command line terminal as follows:
+    ```batch
+    hash=python ~\blabla\main.py $1
+    ```
+    
+    where `~\blabla\main.py` is the path to the *main.py* script and $1 would 
+    be the website name you input. Note that `$1$ works on Windows but is 
+    different from OS to another OS.
+    
+4. You can now generate passwords from the command line with:
+    ```bash
+    hash facebook
+    ```
 
 ## Why ?
 - Not remembering passwords
@@ -47,6 +85,7 @@
 - If you carry this program on a USB drive, be careful not to lose it !!
 
 ## To do
+- Replace '/' in path with sys.sep
 - Build it as executable for
     - [Windows](https://kivy.org/docs/guide/packaging-windows.html) and make it USB portable
     - [Android](https://kivy.org/docs/guide/packaging-android.html)
@@ -57,6 +96,7 @@
 - Finish User interface with [Kivy](https://kivy.org)
     - Colors and better experience
     - Add settings, tools
+- Use Android fingerprint as PIN code replacement
 - Make password robustness check better
     - Add other dictionaries
     - Check for birthdates in password

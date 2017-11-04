@@ -1,13 +1,14 @@
 from os.path import isfile, realpath
+from os import sep
 try: 
     from hashlib import sha3_256 # Python 3
 except ImportError:    
     from sha3 import sha3_256 # Python 2.7
 
-working_path = realpath(__file__) + '\..\..'
+working_path = realpath(__file__) + sep + '..' + sep + '..'
     
 def isMasterpassworddigestfilePresent():
-    if isfile(working_path + "\MasterPasswordDigest.txt"):
+    if isfile(working_path + sep + 'MasterPasswordDigest.txt'):
         return True
     return False
 

@@ -1,4 +1,5 @@
 from math import log
+from os import sep
 from derivatex.tools import working_path
 
 class WordFound(object):
@@ -34,7 +35,7 @@ class WordFound(object):
     
 def evaluatePasswordDictionary(password):
     password = str(password) # For python 2.7
-    with open(working_path + '\derivatex\english.txt', 'r') as f:
+    with open(working_path + sep + 'derivatex' + sep + 'english.txt', 'r') as f:
         raw_data = f.read()
     data = raw_data.split('\n')
     dictionary = set()

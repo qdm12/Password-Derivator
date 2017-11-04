@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from time import time
+from os import sep
 
 from derivatex.myargon import Argon2id
 from derivatex.robustness import evaluatePassword
@@ -66,18 +67,19 @@ def setup(master_password, birthdate):
     del master_password
     digest = intestinize(digest, birthdate)
     try:
-        with open(working_path + '\MasterPasswordDigest.txt','wb') as f:
+        with open(working_path + sep + 'MasterPasswordDigest.txt','wb') as f:
             f.write(digest)
     except Exception as e:
         return not success, "File writing error (" + str(e) + ")"
     else:
         return success, "The digest file has been saved. You can now use PassGen."
 
-def main():
+
+if __name__ == "__main__":
     success = False
     if isMasterpassworddigestfilePresent():
         if input("Digest file already exists. Do you want to overwrite it? yes/no? [no]: ") != "yes":
-            return success
+            exit(0)
     valid = retry = False
     while not valid or retry:
         master_password1 = getpass("Enter your master password: ")
@@ -93,10 +95,6 @@ def main():
         print(message)
         if not success:
             retry = input("Do you want to run the procedure again? [no]") == "yes"
-    return success # Re-run entire setup if fail? (failed and we don't want to re-run)
-
-if __name__ == "__main__":
-    main()
             
             
             

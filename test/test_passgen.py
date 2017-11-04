@@ -75,7 +75,7 @@ class Functions(TestCase):
         masterpassworddigest = b'masterDiGeSt'
         website_name = b'github'
         digest = passgen.intestinize(masterpassworddigest, website_name)
-        self.assertEqual(digest, 'digestDIGESTdigestDIGESTdigest')
+        self.assertEqual(digest, 'digestDIGESTdigestDIGEST')
         
     @patch('derivatex.passgen.Argon2id')
     @patch('derivatex.passgen.sha3')
@@ -87,7 +87,7 @@ class Functions(TestCase):
         masterpassworddigest = b'masterDiGeSt'
         website_name = b'github'
         digest = passgen.intestinize(masterpassworddigest, website_name)
-        self.assertEqual(digest, 'digestDIGESTdigestDIGESTdigest')   
+        self.assertEqual(digest, 'digestDIGESTdigestDIGEST')   
         
     def test_find_characterType(self):
         digit = passgen.find_characterType('0')

@@ -1,6 +1,7 @@
 [run]
 omit =
     derivatex/ui.py
+    install.py
 
 [report]
 fail_under = 70
