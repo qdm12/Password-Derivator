@@ -4,6 +4,8 @@ MasterPasswordDigest.txt
 .coverage
 coverage
 .settings
+.buildozer
+bin
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

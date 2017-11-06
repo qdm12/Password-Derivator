@@ -5,7 +5,7 @@ if __name__ == "__main__":
     chdir(argv[0] + sep + '..')
     
     if len(argv) == 1:
-        from derivatex.ui import launch
+        from derivatex.main import launch
         launch()
     else: # command line mode
         from pyperclip import copy

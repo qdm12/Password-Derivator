@@ -31,6 +31,7 @@
 - Windows
 - *Nix or Ubuntu
 
+
 ### Command line
 **Make sure you use Python 3.6.x (32bit) or Python 2.7.x**
 
@@ -63,6 +64,14 @@
     ```bash
     hash facebook
     ```
+    
+## Compilation
+1. For Android:
+    1. Download the virtual machine [**kivy-buildozer**](http://txzone.net/files/torrents/kivy-buildozer-vm-2.0.zip)
+    2. Extract it, then import it in [Virtual Box](https://www.virtualbox.org/wiki/Downloads) and launch it
+    3. Make sure you have updated software by running `sudo pip install -U buildozer`
+    4. Run `buildozer android_new debug` to build the apk which will be in `/build/derivatex/`
+    5. Or run `buildozer android_new debug deploy run logcat` to build and deploy the APK to your phone
 
 ## Why ?
 - Not remembering passwords
