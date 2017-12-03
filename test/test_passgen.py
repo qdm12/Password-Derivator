@@ -74,8 +74,20 @@ class Functions(TestCase):
         mock_Argon2id.return_value = MockArgon2id()
         masterpassworddigest = b'masterDiGeSt'
         website_name = b'github'
-        digest = passgen.intestinize(masterpassworddigest, website_name)
+        digest = passgen.intestinize(masterpassworddigest, website_name, short=False)
         self.assertEqual(digest, 'digestDIGESTdigestDIGEST')
+        
+    @patch('derivatex.passgen.Argon2id')
+    @patch('derivatex.passgen.sha3')
+    def test_intestinize_short(self, mock_sha3, mock_Argon2id):
+        class MockArgon2id:
+            def hash(self, password):
+                return 'garbagegarbage$digestDIGESTdigestDIGESTdigestDIGESTdigest'
+        mock_Argon2id.return_value = MockArgon2id()
+        masterpassworddigest = b'masterDiGeSt'
+        website_name = b'github'
+        digest = passgen.intestinize(masterpassworddigest, website_name, short=True)
+        self.assertEqual(digest, 'digestDI')
         
     @patch('derivatex.passgen.Argon2id')
     @patch('derivatex.passgen.sha3')
@@ -86,8 +98,8 @@ class Functions(TestCase):
         mock_Argon2id.return_value = MockArgon2id()
         masterpassworddigest = b'masterDiGeSt'
         website_name = b'github'
-        digest = passgen.intestinize(masterpassworddigest, website_name)
-        self.assertEqual(digest, 'digestDIGESTdigestDIGEST')   
+        digest = passgen.intestinize(masterpassworddigest, website_name, short=False)
+        self.assertEqual(digest, 'digestDIGESTdigestDIGEST')
         
     def test_find_characterType(self):
         digit = passgen.find_characterType('0')
@@ -191,4 +203,15 @@ class Functions(TestCase):
         website_name = "test"
         password = passgen.passgen(website_name)
         self.assertEqual(password, "digestDIGESTED1*")
+        
+    @patch('derivatex.passgen.ensure_characters')
+    @patch('derivatex.passgen.intestinize')
+    @patch('derivatex.passgen.read_masterpassworddigest')
+    def test_passgen_short(self, mock_read_masterpassworddigest, mock_intestinize, mock_ensure_characters):
+        mock_read_masterpassworddigest.return_value = b'digest'
+        mock_intestinize.return_value.return_value = "digestDI"
+        mock_ensure_characters.return_value = "dig1*tDI"
+        website_name = "test"
+        password = passgen.passgen(website_name, short=True)
+        self.assertEqual(password, "dig1*tDI")
         

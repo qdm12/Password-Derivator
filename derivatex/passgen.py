@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from math import ceil
 from os import sep
 from pyperclip import copy
 try:
@@ -29,20 +30,23 @@ def read_masterpassworddigest():
             digest = digest_and_checksum[:-4]
             return digest
 
-def intestinize(masterpassworddigest, website_name):
+def intestinize(masterpassworddigest, website_name, short):
     """
         Returns a string (not bytes) of readable characters
-    """    
+    """
     Input = masterpassworddigest + website_name
     # can't bruteforce password really so we set time_cost to 1
     salt = sha3(website_name)
+    length = 24 # for 24 characters
+    if short:
+        length = 8 # for 8 characters
     digest = Argon2id(salt=salt,
-                      hash_len=18, # for 24 characters
+                      hash_len=ceil(length/1.33),
                       memory_cost=33554,
                       time_cost=1).hash(Input)
     del Input, masterpassworddigest, website_name
     digest = digest[digest.rfind('$')+1:]
-    return digest[:24] # makes sure it's only 24 characters
+    return digest[:length]
 
 def deterministic_random(string, multiplier):
     x = 0
@@ -92,10 +96,10 @@ def ensure_characters(password):
             password = ensure(characterType, password, index) 
     return password
 
-def passgen(website_name):
+def passgen(website_name, short=False):
     website_name = website_name.encode('utf-8')
     masterpassworddigest = read_masterpassworddigest()
-    password = intestinize(masterpassworddigest, website_name)
+    password = intestinize(masterpassworddigest, website_name, short)
     # We make sure the password will have 1 digit, 1 letter, 1 uppercase letter and 1 symbol
     password = ensure_characters(password)
     return password

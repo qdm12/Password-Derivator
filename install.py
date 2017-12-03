@@ -4,7 +4,7 @@ from os import environ
 from sys import argv
 
 python2 = ["pysha3", "mock"]
-core = ["argon2_cffi"]
+core = ["argon2_cffi", "qrcode"]
 ui = ["kivy", "kivy.deps.sdl2", "kivy.deps.glew", "pyperclip"]
 tests = ["nose", "rednose", "coverage", "coveralls"]
 build = []
