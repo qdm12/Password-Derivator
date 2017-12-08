@@ -2,7 +2,6 @@
 
 from math import ceil
 from os import sep
-from pyperclip import copy
 try:
     from builtins import input
 except ImportError:
@@ -11,6 +10,7 @@ from derivatex.tools import sha3, working_path
 from derivatex.myargon import Argon2id
 from derivatex.initiate import checksumIsValid
 from derivatex.tools import isMasterpassworddigestfilePresent
+from derivatex.commandLine import passgenCommandLine
 
 class MasterPasswordDigestException(Exception):
     pass
@@ -105,8 +105,4 @@ def passgen(website_name, short=False):
     return password
 
 if __name__ == '__main__':
-    website_name = input("Enter the website name: ")
-    password = passgen(website_name)
-    print("=> Your password is: " + password)
-    copy(password)
-    print("Password already copied to your clipboard")
+    passgenCommandLine()

@@ -5,14 +5,8 @@ from os import sep
 
 from derivatex.myargon import Argon2id
 from derivatex.robustness import evaluatePassword
-from derivatex.tools import isMasterpassworddigestfilePresent, sha3,\
-    working_path
-
-from getpass import getpass
-try:
-    from builtins import input
-except ImportError:
-    from __builtin__ import raw_input as input
+from derivatex.tools import sha3, working_path
+from derivatex.commandLine import initiateCommandLine
 
 def get_time_per_time_cost(iterations=8):
     start = time()
@@ -73,28 +67,9 @@ def setup(master_password, birthdate):
         return not success, "File writing error (" + str(e) + ")"
     else:
         return success, "The digest file has been saved. You can now use PassGen."
-
-
+    
 if __name__ == "__main__":
-    success = False
-    if isMasterpassworddigestfilePresent():
-        if input("Digest file already exists. Do you want to overwrite it? yes/no? [no]: ") != "yes":
-            exit(0)
-    valid = retry = False
-    while not valid or retry:
-        master_password1 = getpass("Enter your master password: ")
-        master_password2 = getpass("Enter your master password again: ")
-        valid, safer, message = check_master_password(master_password1, master_password2)
-        print(message)
-        if valid and not safer:
-            retry = input("yes/no? [no]") == 'yes'
-    birthdate = input("Enter your birthdate (dd/mm/yyyy): ")
-    retry = False
-    while not success or retry:
-        success, message = setup(master_password1, birthdate)
-        print(message)
-        if not success:
-            retry = input("Do you want to run the procedure again? [no]") == "yes"
+    initiateCommandLine()
             
             
             

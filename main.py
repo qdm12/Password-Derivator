@@ -1,26 +1,25 @@
 from sys import argv
-from os import chdir, sep
-from qrcode import QRCode
+from os import chdir, sep   
+import install
+from os import environ
 
-   
 if __name__ == "__main__":
     chdir(argv[0] + sep + '..')
-    if len(argv) == 1:
+    install.core()
+    if 'TRAVIS' in environ:
+        install.dev()
+    elif len(argv) == 1: # user interface
+        install.kivy()
         from derivatex.main import launch
         launch()
-    else: # command line mode
-        from pyperclip import copy
-        from derivatex.passgen import passgen
-        short = False
-        if len(argv) > 2: # optional arguments
-            if argv[2] == "short":
-                short = True                
-        password = passgen(argv[1], short)
-        copy(password)
-        print(password)
-        print("Password already copied to your clipboard")
-        print("")
-        qr = QRCode(border=1)
-        qr.add_data(password)
-        qr.print_ascii()
-        # TODO add setup option
+    else: # command line
+        if argv[1] == "#setup":
+            from derivatex.commandLine import initiateCommandLine
+            try:
+                initiateCommandLine()
+            except KeyboardInterrupt:
+                print("")
+        else:
+            install.passgenCommandLine()
+            from derivatex.commandLine import passgenCommandLine
+            passgenCommandLine(argv)

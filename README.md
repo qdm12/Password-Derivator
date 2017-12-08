@@ -3,75 +3,42 @@
 [![Coverage Status](https://coveralls.io/repos/github/qdm12/Password-Derivator/badge.svg?branch=master)](https://coveralls.io/github/qdm12/Password-Derivator?branch=master)
 [![Build Status](https://travis-ci.org/qdm12/Password-Derivator.svg?branch=master)](https://travis-ci.org/qdm12/Password-Derivator)
 
-## Installation
+## Installation and running it
 
-### Python
+### Command line
 **Make sure you use Python 3.6.x (32bit) or Python 2.7.x**
 
-1. Install Python packages
-    ```shell
-    python install.py
-    ```
-   
-2. Launch the user interface:
-    ```shell
-    python ui.py
-    ```
-   
-3. Launch the script files directly:
-    ```shell
-    python initiate.py
-    python passgen.py
-    ```
-    
+Launch the main script `main.py`
+```bash
+python main.py
+```
+
+You can also create a shortcut / alias to `main.py` and it will work with any path 
+
+This will **silently** install required packages automatically.
+
+The options are:
+- `python main.py` will open the user interface
+- `python main.py #setup` will generate the master digest file deterministically from your master password and birth date
+- `python main.py facebook` will generate a deterministic password for **facebook** with a length of 24 characters
+- `python main.py facebook short` will generate a deterministic password for **facebook** with a length of 8 characters
+
+  
 ### User interface
 - Android app
 - iOS app
 - Mac OSX
 - Windows
 - *Nix or Ubuntu
-
-
-### Command line
-**Make sure you use Python 3.6.x (32bit) or Python 2.7.x**
-
-1. Install Python packages
-    ```bash
-    python install.py
-    ```
-   
-2. Generate your Master Password Digest file ONCE with either:
-    - The UI
-        ```bash
-        python ui.py
-        ```
-        
-    - The script *initiate.py*
-        ```shell
-        python initiate.py
-        ```
-        
-3. Create an alias for your command line terminal as follows:
-    ```batch
-    hash=python ~\blabla\main.py $1
-    ```
-    
-    where `~\blabla\main.py` is the path to the *main.py* script and $1 would 
-    be the website name you input. Note that `$1$ works on Windows but is 
-    different from OS to another OS.
-    
-4. You can now generate passwords from the command line with:
-    ```bash
-    hash facebook
-    ```
     
 ## Compilation
 1. For Android:
     1. Download the virtual machine [**kivy-buildozer**](http://txzone.net/files/torrents/kivy-buildozer-vm-2.0.zip)
     2. Extract it, then import it in [Virtual Box](https://www.virtualbox.org/wiki/Downloads) and launch it
     3. Make sure you have updated software by running `sudo pip install -U buildozer`
-    4. Run `buildozer android_new debug` to build the apk which will be in `/build/derivatex/`
-    5. Or run `buildozer android_new debug deploy run logcat` to build and deploy the APK to your phone
+    4. `git clone repository` to ~
+    4. Run `buildozer android debug` to build the apk which will be in `/build/derivatex/`
+    5. Or run `buildozer android debug deploy run logcat` to build and deploy the APK to your phone
 
 ## Why ?
 - Not remembering passwords

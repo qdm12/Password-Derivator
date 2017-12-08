@@ -1,36 +1,31 @@
 import pip
-from sys import platform, version_info
-from os import environ
-from sys import argv
+from sys import version_info
 
-python2 = ["pysha3", "mock"]
-core = ["argon2_cffi", "qrcode"]
-ui = ["kivy", "kivy.deps.sdl2", "kivy.deps.glew", "pyperclip"]
-tests = ["nose", "rednose", "coverage", "coveralls"]
-build = []
-windows_build = ["pyinstaller"]
+pipOptions = ['-q']
 
 def install(packages):
     for package in packages:
-        pip.main(['install', package])
-
-if __name__ == '__main__':
-    install(core)
-    if version_info[0] == 2:
-        install(python2)
-    if 'TRAVIS' in environ:
-        install(tests)
-    else:
-        install(ui)
-    if len(argv) >= 3:
-        if argv[1] == 'build':
-            install(build)
-            if argv[2] == 'windows':
-                install(windows_build)
+        pip.main(['install', package] + pipOptions)
         
-    if platform == 'windows':
-        pass
-    if platform.startswith('linux'):
-        pass
-    if platform == 'darwin': # MacOS
-        pass
+def core():
+    install(["argon2_cffi"])
+    if version_info[0] == 2:
+        install("pysha3")
+        
+def passgenCommandLine():
+    install(["qrcode", "pyperclip"])
+        
+def kivy():
+    install(["kivy", "kivy.deps.sdl2", "kivy.deps.glew"])
+        
+def dev():
+    install(["nose", "rednose", "coverage", "coveralls"])
+    if version_info[0] == 2:
+        install(["mock"])
+        
+if __name__ == '__main__':
+    pipOptions = [] # not quiet
+    core()
+    passgenCommandLine()
+    dev()
+    kivy()
