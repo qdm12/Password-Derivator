@@ -2,10 +2,6 @@
 
 from math import ceil
 from os import sep
-try:
-    from builtins import input
-except ImportError:
-    from __builtin__ import raw_input as input
 from derivatex.tools import sha3, working_path
 from derivatex.myargon import Argon2id
 from derivatex.initiate import checksumIsValid
