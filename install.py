@@ -25,7 +25,6 @@ def dev():
         
 if __name__ == '__main__':
     pipOptions = [] # not quiet
-    install("pysha3")
     core()
     passgenCommandLine()
     dev()
