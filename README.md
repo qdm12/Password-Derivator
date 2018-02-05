@@ -5,32 +5,51 @@
 
 ## Installation and running it
 
-### Command line
-**Make sure you use Python 3.6.x (32bit) or Python 2.7.x**
-
-Launch the main script `main.py`
-```bash
-python main.py
-```
-
-You can also create a shortcut / alias to `main.py` and it will work with any path 
-
-This will **silently** install required packages automatically.
-
-The options are:
-- `python main.py` will open the user interface
-- `python main.py #setup` will generate the master digest file deterministically from your master password and birth date
-- `python main.py facebook` will generate a deterministic password for **facebook** with a length of 24 characters
-- `python main.py facebook short` will generate a deterministic password for **facebook** with a length of 8 characters
-
+1. Make sure you use **Python 3.6.x (32bit) or Python 2.7.x**
+2. Install the required packages
+	- For terminal usage only:
+	```bash
+	python install.py terminal
+	```
+	- For UI only:
+	```bash
+	python install.py ui
+	```
+	- For development testing:
+	```bash
+	python install.py dev
+	```
+	- For a combination of them, for example:
+	```bash
+	python install.py ui terminal
+	```
+3. Launch the program
+	- For user interface:
+	```bash
+	python main.py
+	```
+	- For terminal:
+		1. Generate the master digest file deterministically from your master password and birth date
+		```bash
+		python main.py #setup
+		```
+		2. Generate a deterministic password for **facebook** with a length of 24 characters
+		```bash
+		python main.py facecebook
+		```
+		3. *Optional*: Generate a deterministic password for **facebook** with a length of **8** characters
+		```bash
+		python main.py facecebook short
+		```
   
-### User interface
-- Android app
-- iOS app
-- Mac OSX
+## Platform availability
+- Docker (in progress)
+- Linux
+- Mac OSx
 - Windows
-- *Nix or Ubuntu
-    
+- Android (in progress)
+- iOS (not started yet)
+
 ## Compilation
 1. For Android:
     1. Download the virtual machine [**kivy-buildozer**](http://txzone.net/files/torrents/kivy-buildozer-vm-2.0.zip)
@@ -150,18 +169,3 @@ The options are:
 	  - The character in the password at the third index is ensured to be an uppercase letter
 	  - The character in the password at the fourth index is ensured to be a symbol (not any ASCII number though)
 4. The password is then shown to the user.
-
-## Why ?
-- Always **match password requirements** for websites
-- If a website not using password hashing is hacked, the attacker will be limited to this website
-- You can re-use this program for all websites, especially if the attacker does not know you use this program (most likely)
-- **As long as the attacker does not know you use this program**:
-  - Your password is very strong and unbreakable if the attacker attacks a website
-  - Plaintext communication (over HTTP) of your password won't reveal any information about your master password or password generation
-  - NSA sniffing on HTTPS providers will also not learn any information regarding your master password or password generation
-- **If an attacker only knows you use this program** AND has one (or more) of your generated password(s)
-  - You are safe depending on your master password. This information is given when running *firstrun.py*.
-    For example, the master password **abc12$** is safe for 1253600 years (with a single machine attacking)
-- **If an attacker knows you use this program** AND **has your MasterPasswordDigest**:
-  - You are safe depending on your master password. This information is given when running *firstrun.py*.
-    For example, the master password **abc12$** is safe for 1044700 years (with a single machine attacking)

@@ -1,15 +1,9 @@
 from sys import argv
-from os import chdir, sep   
-import install
-from os import environ
+from os import chdir, sep
 
 if __name__ == "__main__":
     chdir(argv[0] + sep + '..')
-    install.core()
-    if 'TRAVIS' in environ:
-        install.dev()
-    elif len(argv) == 1: # user interface
-        install.kivy()
+    if len(argv) == 1: # user interface
         from derivatex.main import launch
         launch()
     else: # command line
@@ -20,6 +14,5 @@ if __name__ == "__main__":
             except KeyboardInterrupt:
                 print("")
         else:
-            install.passgenCommandLine()
             from derivatex.commandLine import passgenCommandLine
             passgenCommandLine(argv)

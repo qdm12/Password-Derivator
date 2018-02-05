@@ -2,6 +2,8 @@
 omit =
     derivatex/ui.py
     derivatex/myargon.py
+	derivatex/main.py
+	derivatex/commandLine.py
     install.py
 
 [report]
