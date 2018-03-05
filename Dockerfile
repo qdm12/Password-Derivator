@@ -1,9 +1,10 @@
-FROM python:alpine
-RUN apk add --no-cache make gcc g++
-RUN pip install -U cffi pip setuptools
-RUN mkdir -p /safe
-WORKDIR /safe
-COPY derivatex /safe
-COPY install.py main.py dockerscript.sh /safe/
+FROM ubuntu
+RUN apt-get update && apt-get install -y python python-pip
+RUN mkdir -p /derivatex
+WORKDIR /derivatex
+COPY install.py main.py ./
 RUN python install.py terminal
-ENTRYPOINT ['/safe/dockerscript.sh']
+COPY derivatex ./
+COPY dockerscript.sh ./
+RUN chmod +x /derivatex/dockerscript.sh
+CMD './derivatex/dockerscript.sh'

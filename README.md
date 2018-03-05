@@ -3,6 +3,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/qdm12/Password-Derivator/badge.svg?branch=master)](https://coveralls.io/github/qdm12/Password-Derivator?branch=master)
 [![Build Status](https://travis-ci.org/qdm12/Password-Derivator.svg?branch=master)](https://travis-ci.org/qdm12/Password-Derivator)
 
+## URGENT To dos
+
+- Fix Docker
+- Compile for mobile
+- Readme diagrams
+
 ## Installation and running it
 
 1. Make sure you use **Python 3.6.x (32bit) or Python 2.7.x**
@@ -43,6 +49,7 @@
 		```
   
 ## Platform availability
+
 - Docker (in progress)
 - Linux
 - Mac OSx
@@ -51,6 +58,7 @@
 - iOS (not started yet)
 
 ## Compilation
+
 1. For Android:
     1. Download the virtual machine [**kivy-buildozer**](http://txzone.net/files/torrents/kivy-buildozer-vm-2.0.zip)
     2. Extract it, then import it in [Virtual Box](https://www.virtualbox.org/wiki/Downloads) and launch it
@@ -80,6 +88,8 @@
 - If you carry this program on a USB drive, be careful not to lose it !!
 
 ## To do
+
+- Docker and eventually webpage
 - Replace '/' in path with sys.sep
 - Build it as executable for
     - [Windows](https://kivy.org/docs/guide/packaging-windows.html) and make it USB portable
