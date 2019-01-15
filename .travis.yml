@@ -1,8 +1,9 @@
 language: python
 python:
-  - "3.6"
+  - "3.7"
 
-install: "python install.py dev"
+install:
+  - pip install nose rednose coverage coveralls
 
 script:
   - nosetests --verbose --rednose --with-coverage --cover-erase --cover-package=derivatex

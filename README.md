@@ -1,73 +1,61 @@
 # Password-Derivator
 
+**This project is no longer maintained (it works though), use Derivatex instead**
+
 [![Coverage Status](https://coveralls.io/repos/github/qdm12/Password-Derivator/badge.svg?branch=master)](https://coveralls.io/github/qdm12/Password-Derivator?branch=master)
 [![Build Status](https://travis-ci.org/qdm12/Password-Derivator.svg?branch=master)](https://travis-ci.org/qdm12/Password-Derivator)
 
-## URGENT To dos
+## Setup
 
-- Fix Docker
-- Compile for mobile
-- Readme diagrams
+**Make sure you use Python 3.7.x (32bit) or Python 2.7.x** and PIP
 
-## Installation and running it
+### Command line
 
-1. Make sure you use **Python 3.6.x (32bit) or Python 2.7.x**
-2. Install the required packages
-	- For terminal usage only:
-	```bash
-	python install.py terminal
-	```
-	- For UI only:
-	```bash
-	python install.py ui
-	```
-	- For development testing:
-	```bash
-	python install.py dev
-	```
-	- For a combination of them, for example:
-	```bash
-	python install.py ui terminal
-	```
-3. Launch the program
-	- For user interface:
-	```bash
-	python main.py
-	```
-	- For terminal:
-		1. Generate the master digest file deterministically from your master password and birth date
-		```bash
-		python main.py #setup
-		```
-		2. Generate a deterministic password for **facebook** with a length of 24 characters
-		```bash
-		python main.py facecebook
-		```
-		3. *Optional*: Generate a deterministic password for **facebook** with a length of **8** characters
-		```bash
-		python main.py facecebook short
-		```
-  
-## Platform availability
+1. Install necessary packages
 
-- Docker (in progress)
-- Linux
-- Mac OSx
-- Windows
-- Android (in progress)
-- iOS (not started yet)
+    ```bash
+    # Python 3
+    pip3 install argon2_cffi qrcode pyperclip
+    # Python 2
+    pip install argon2_cffi pysha3 qrcode pyperclip
+    ```
 
-## Compilation
+1. Launch the main script *main.py*. The options are:
+    - `python main.py` will open the user interface (see below)
+    - `python main.py #setup` will generate the master digest file deterministically from your master password and birth date
+    - `python main.py facebook` will generate a deterministic password for **facebook** with a length of 24 characters
+    - `python main.py facebook short` will generate a deterministic password for **facebook** with a length of 8 characters
 
-1. For Android:
-    1. Download the virtual machine [**kivy-buildozer**](http://txzone.net/files/torrents/kivy-buildozer-vm-2.0.zip)
-    2. Extract it, then import it in [Virtual Box](https://www.virtualbox.org/wiki/Downloads) and launch it
-    3. Make sure you have updated software by running `sudo pip install -U buildozer`
-    4. `git clone repository` to ~
-    4. Run `buildozer android debug` to build the apk which will be in `/build/derivatex/`
-    5. Or run `buildozer android debug deploy run logcat` to build and deploy the APK to your phone
+### User interface
+
+1. Install necessary packages
+        
+    ```bash
+    # Python 3
+    pip3 install argon2_cffi kivy kivy.deps.sdl2 kivy.deps.glew
+    # Python 2
+    pip install argon2_cffi kivy kivy.deps.sdl2 kivy.deps.glew
+    ```
+
+1. Launch the user interface with
+
+    ```bash
+    python main.py
+    ```
+    
+### Development
+
+To run tests and develop the code, install the following:
+
+```bash
+# Python 3
+pip3 install argon2_cffi qrcode pyperclip argon2_cffi kivy kivy.deps.sdl2 kivy.deps.glew nose rednose coverage coveralls
+# Python 2
+pip install argon2_cffi pysha3 qrcode pyperclip argon2_cffi kivy kivy.deps.sdl2 kivy.deps.glew nose rednose coverage coveralls mock
+```
 
 ## Why ?
+
 - Not remembering passwords
 - Resistant to loss
 - Resistant to bruteforce attacks
@@ -89,7 +77,6 @@
 
 ## To do
 
-- Docker and eventually webpage
 - Replace '/' in path with sys.sep
 - Build it as executable for
     - [Windows](https://kivy.org/docs/guide/packaging-windows.html) and make it USB portable
@@ -110,6 +97,7 @@
 - Write some C code binding to Python to securely erase memory
 
 ## Done
+
 - Write/Read of master password digest
 - Recovery procedure if the master password digest file is lost
 - Password generated matches all website requirements (hopefully)
@@ -122,6 +110,7 @@
 - Unit tests with coveralls and Travis CI
 
 ## To do eventually
+
 - SSH keys generation from file
 - See the list of websites you generated a password for
 - AES encryption of files/directories
@@ -129,7 +118,8 @@
 - Shamir Secret sharing 
 - Show robustness of password: # of words, # of letters, # of digits etc.
 
-## What does it do, SIMPLIFIED 
+## What does it do, SIMPLIFIED
+
 1. You input your *password* and *birthdate* **once** to generate the file `MasterPasswordDigest.txt`
    - It is impossible to deduce your *password* or *birthdate* from this file
    - This file should be kept safe
@@ -145,6 +135,7 @@
       - No common words our famous names
 	     
 ## What does it do, LESS SIMPLIFIED
+
 1. The first part of the program stores the *nth* **argon2id** hash digest of your **master password** in a *file* (that should thus be **kept safe** !)
    - *nth* is derived from your birth date
    - This allows you to restore the file from your master password and birth date
@@ -179,3 +170,19 @@
 	  - The character in the password at the third index is ensured to be an uppercase letter
 	  - The character in the password at the fourth index is ensured to be a symbol (not any ASCII number though)
 4. The password is then shown to the user.
+
+## Why ?
+
+- Always **match password requirements** for websites
+- If a website not using password hashing is hacked, the attacker will be limited to this website
+- You can re-use this program for all websites, especially if the attacker does not know you use this program (most likely)
+- **As long as the attacker does not know you use this program**:
+  - Your password is very strong and unbreakable if the attacker attacks a website
+  - Plaintext communication (over HTTP) of your password won't reveal any information about your master password or password generation
+  - NSA sniffing on HTTPS providers will also not learn any information regarding your master password or password generation
+- **If an attacker only knows you use this program** AND has one (or more) of your generated password(s)
+  - You are safe depending on your master password. This information is given when running *firstrun.py*.
+    For example, the master password **abc12$** is safe for 1253600 years (with a single machine attacking)
+- **If an attacker knows you use this program** AND **has your MasterPasswordDigest**:
+  - You are safe depending on your master password. This information is given when running *firstrun.py*.
+    For example, the master password **abc12$** is safe for 1044700 years (with a single machine attacking)
